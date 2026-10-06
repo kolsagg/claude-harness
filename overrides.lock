@@ -1,0 +1,13 @@
+{
+  "skills/motion-film/SKILL.md": "a11b9bd03f19104fea87069d4fc20e9819c0f535ea180c84531cc1a00df0109f",
+  "skills/motion-film/engine/core.js": "617f0f486e219e4f970278e50648bea48098683c78a5a0007005682aa12229bb",
+  "skills/motion-film/engine/start.js": "ce786e48f1c79dce37d6e14eb90c187e0abfdf0022edcab5ca1507f5437b8bda",
+  "skills/motion-film/lessons.md": "e688d905e6e643e4d8aabeafc7403489abf47267b4ec9ba393fe0ef23aa44664",
+  "skills/motion-film/profiles/_template/theme.js": "b4329582fb09503d4a11e5f7480baacf02376bead35490ed29d217097dcf550a",
+  "skills/sunum-site/SKILL.md": "d8096b1b71fb679d1c94f997ca8fc0c578a544ad075f0c51608379569965203b",
+  "skills/sunum-site/template/assets/icon.svg": "738776fc11629b84d2f11e024a6fb829b1479bf8e337254f5d65b5f065d90c89",
+  "skills/sunum-site/template/assets/logo-dark.svg": "073873766add8594f5d763db9f4bdc4dba4a9855e9a47d893eb23a67b66b95da",
+  "skills/sunum-site/template/assets/logo-light.svg": "eb80f32b9de07faede08597f2dade131caca58cfcd880cce8834cb86e949dfc4",
+  "skills/sunum-site/template/css/brand.css": "67732f43c296fd89bdc89ef0b052c0de830f796536d7b566b315a16da21e780d",
+  "skills/sunum-site/template/index.html": "4936d1640e18fbd87e0ac9676f0e0557be0cbced773712a5ad0a76043e7a9c2c"
+}

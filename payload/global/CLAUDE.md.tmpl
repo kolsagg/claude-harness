@@ -1,0 +1,107 @@
+<!-- if:vault -->
+# Second Brain Bridge (PC-wide)
+
+İkinci beyin (vault): `{{VAULT_PATH}}`
+
+Hangi dizinde çalışırsan çalış (özellikle `~/dev` altındaki projeler):
+- "vaulta not düş / yakala / ikinci beyne yaz" → `{{VAULT_PATH}}\📥 000-Inbox\Dump\` altına YAML frontmatter'lı (title, created, type, status, tags) markdown not olarak yaz. İşleme yapma, ham bırak.
+- "vaulttan oku / ikinci beyinde ne var" → vault içinde ara/oku, cevapla.
+- `~/dev` altında beyin bridge hook'u (global settings.json, SessionStart/Stop/PreCompact/SessionEnd) kısa bir bootstrap enjekte eder; kaynaklı arama için oradaki `beyin.py context "konu" --project X --json` komutunu kullan, dosya gezmeden önce. Hook companion geçmişini enjekte etmez; yazma köprüsü (Dump notu) yukarıdaki kural olarak kalır.
+- Vault dışındayken vault'un companion personası ve hafıza protokolü (companion klasörüne yazımlar) UYGULANMAZ — sadece bu okuma/yazma köprüsü geçerli.
+- Kod projesinin kendi bilgisi (mimari, runbook) vault'a değil, projenin kendi docs yapısına gider.
+<!-- endif:vault -->
+
+---
+
+# Core Philosophy
+
+Test-driven, security-first. Delegate per fable-orchestration; trivial work stays in the main loop.
+
+---
+
+## Agents and review
+
+| Need | Use |
+|------|-----|
+| Trace unfamiliar code before touching it | `Explore` agent (`model: 'sonnet'`) |
+| Review after every implementation lane, before commit | `mattpocock-skills:code-review` (standards + spec), or `/code-review` for a bug hunt |
+| Test-first feature or bug fix | `mattpocock-skills:tdd` |
+| Hard bug, flaky failure, regression | `mattpocock-skills:diagnosing-bugs` |
+| Change touching auth, customer data, payments, external API keys | `/security-review` before commit |
+| Library/API question | context7 MCP |
+
+---
+
+## Communication Shortcuts
+
+### Reference Points
+When presenting 3+ findings, decisions, options, risks, questions, or actions, assign each a short stable code and keep it stable for the whole conversation: `D1..` decisions, `O1..` options, `F1..` findings, `R1..` risks, `Q1..` questions, `A1..` actions. Invent new prefixes for new categories. Skip codes for short simple answers. The user can then say "expand R2" or "skip D1, do A3".
+- Exception, tracker items: never invent a code (`T1..` or any other) for tickets/issues. Before publishing, a draft list uses plain list numbers only. Once published, an issue is referred to only by its own tracker number (`#12`) in chat, titles, bodies and "Blocked by" lines; issue titles carry no code prefix. Reason: invented codes drift from the real issue numbers.
+
+### Evidence Before Completion Claims
+Never claim work is complete without evidence: show the test output, the diff, or the file path that proves it. "Done" without proof is forbidden.
+
+## Personal Preferences
+
+### Language
+- Talk to {{USER_NAME}} in {{LANGUAGE}}.
+- Sub-agent briefs and prompts: English.
+- Documents people read are {{LANGUAGE}}: issues, specs, tickets, ADRs, CONTEXT.md, notes/GOALS/BACKLOG/DONE, `reports/`, PR bodies, vault notes. Commit messages (after the `feat:`-style prefix) and code comments: {{LANGUAGE}}. Code identifiers and technical terms stay as they are.
+
+
+### Technical Glossary
+- Maintain `~/.claude/GLOSSARY.md`: every technical term used when talking to the user (gate, CAS, worktree, fail-closed, ...) must have a one-line plain-{{LANGUAGE}} definition there.
+- When a session introduces a technical term not yet in the glossary, append it (same format: `- **term** — short plain-language definition`) before the session ends.
+- On first use of a rare/new term in conversation, give the one-line meaning inline; the glossary is the durable reference the user can open anytime.
+
+### Privacy
+- Always redact logs; never share secrets (API keys/tokens/passwords/JWTs)
+- Review output before sharing — remove any sensitive data
+
+### Code Style
+- No emojis in code, comments, or documentation (unless user explicitly asks)
+- Prefer immutability — never mutate objects or arrays
+- Many small files over few large files
+- 200-400 lines typical, 800 max per file
+
+### Git
+- Conventional commits: `feat:`, `fix:`, `refactor:`, `docs:`, `test:`
+- Always test locally before committing
+- Small, focused commits
+
+### Testing
+- TDD: write tests first
+- 80% minimum coverage
+- Unit + integration + E2E for critical flows
+- These hold when `mattpocock-skills:tdd` runs too: it sets no coverage target, this rule does (decision 2026-09-10).
+
+### Knowledge Capture
+- Personal debugging notes, preferences, temporary context → auto memory
+- Team/project knowledge (architecture decisions, API changes, runbooks) → follow the project's existing docs structure
+- If the current task already produces the relevant docs/comments/examples, don't duplicate the same knowledge elsewhere
+- If there's no obvious project doc location, ask before creating a new top-level doc
+
+### Research Reports
+- Any substantive research/investigation done on request (external doc analysis, codebase audits, tool evaluations) → write the full findings to `<projectRoot>/reports/YYYY-MM-DD-<topic>.md` before finishing the task, so future agents re-read the report instead of re-gathering context (token savings).
+- Include: source, date, key findings, decisions taken (adopted/rejected and why). {{LANGUAGE}} (see Language).
+- Check `reports/` before starting new research on a topic — a prior report may already cover it.
+
+### Docs Fetching
+- Mintlify-hosted docs sites (e.g. docs.warp.dev) serve a raw markdown twin of every page at `<page-url>.md` and a full index at `<site>/llms.txt`. Fetch the `.md` variant — fetching the HTML URL summarizes and loses detail. Check for this pattern on any docs site before deep research.
+
+### Project bootstrap
+- New code project, or existing one missing the skeleton → load skill `proje-baslat` (creates CLAUDE.md, notes.md, GOALS.md, BACKLOG.md, DONE.md, CONSTANTS.md, CONTEXT.md, docs/adr/, BAGIMLILIKLAR.md, reports/, references/, git + GitHub, then mattpocock-skills setup with GitHub Issues). Not inside the vault.
+- `BAGIMLILIKLAR.md` = things that break silently when something else changes, each with a check command. A global SessionStart hook runs the doctor for you (skeleton check live, full registry from a background cache) and injects text only when red; act on that text. Run `python ~/.claude/skills/proje-baslat/doktor.py <root>` by hand after infra/config/name changes (red `iskelet` = older template; repair = `proje-baslat` retrofit mode); harness registry is `~/.claude/BAGIMLILIKLAR.md`. On red, do the `bozuksa:` action; never edit the check to make it green. Adding entries is YOUR job, not the user's: in the same change that couples two things (same value in two places, a script/job/backup naming a resource, an env var or secret name, an external endpoint/webhook/DNS record, a local patch an update will overwrite), add the entry with a working `kontrol:` command, run the doctor once, and mention it in one line. Do not ask permission to add. Couplings outside the repo are invisible to you; ask about them once when deployment or integration comes up.
+- `BACKLOG.md` = started-and-unfinished work. Mandatory: before stopping mid-task, append what was done, what remains, where. Read it at session start. Finished items move to `DONE.md`.
+- `CONSTANTS.md` = never-changing values. When unsure about an address, port, name or ID, read it; never guess.
+- Planned project work = GitHub Issues (`docs/agents/issue-tracker.md`). Project-less personal tasks → `~/.claude/TODO.md`; never route project items there.
+
+---
+
+# graphify
+- **graphify** (`~/.claude/skills/graphify/SKILL.md`) - any input to knowledge graph. Trigger: `/graphify`
+When the user types `/graphify`, use the installed graphify skill or instructions before doing anything else.
+
+# fable-orchestration
+- **fable-orchestration** (`~/.claude/skills/fable-orchestration/SKILL.md`) - main loop Opus 5.5 owns judgment, specs and synthesis. Sonnet 5.5 agents by default for context gathering and code writing; Opus 5.5 agents for important/architectural/risky changes and every review round. Parallel write lanes get disjoint OWNS lists. Always stamp `model:` explicitly.
+Whenever the task needs sub-agents or substantial research or code, load this skill before doing anything else.

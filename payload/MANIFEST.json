@@ -1,0 +1,166 @@
+[
+  {
+    "path": "codex/config.toml",
+    "sha256": "74e7584cf31ce4c16a3be34d3bd1fec6b4484032c59df86575b3e2d7789589db"
+  },
+  {
+    "path": "global/BAGIMLILIKLAR.md.tmpl",
+    "sha256": "4dea5dd8a3ddfcb9692e6561078a4385c338ce5cddb5466d329f4afabd3aa0a0"
+  },
+  {
+    "path": "global/CLAUDE.md.tmpl",
+    "sha256": "624c4ca5a160fefda3ec13b96e49e330c1302b258f18d9f7a4d7deca809ab015"
+  },
+  {
+    "path": "global/GLOSSARY.md.tmpl",
+    "sha256": "87d06c34715aac498deb145034adf43055bc982d898c52f703b1c8b767b7ff96"
+  },
+  {
+    "path": "settings/base.json",
+    "sha256": "3da019e50ce5544cfef402f189f319e43b2d1e2f379eb17c71ac38bd2ec71527"
+  },
+  {
+    "path": "settings/permissions.json",
+    "sha256": "894dd2a7857468a44d02757ee04c11a7102ae0618b13ece1eff0eda9c39ccd3c"
+  },
+  {
+    "path": "skills/codex-fleet/SKILL.md",
+    "sha256": "2839ae72c51f5839a16d3838aa9eae2f469c67e959f598171e8a7f8aaa4907b1"
+  },
+  {
+    "path": "skills/codex-fleet/scripts/Invoke-KeepAwake.ps1",
+    "sha256": "7c1f6aa63d155dec05817743a669094cecd6090cc35971c71e206b414591db72"
+  },
+  {
+    "path": "skills/codex-fleet/scripts/Resize-Image.ps1",
+    "sha256": "c44dabbd3ca208d06714cd67e371155bff07edfc3863acbaf048dd4196e1ee0c"
+  },
+  {
+    "path": "skills/derin-analiz/SKILL.md",
+    "sha256": "44ff1dca07c782a9cd09a4992aa1b8ec838d79100fcb799e033a84def2b71cbd"
+  },
+  {
+    "path": "skills/derin-arastirma/SKILL.md",
+    "sha256": "5936f30067d073e469ff8ff1949d774c529a8f09c0601e3b37050bc364f506c4"
+  },
+  {
+    "path": "skills/fable-orchestration/SKILL.md",
+    "sha256": "dfbf7eedff1df312817898b28fb81ef3115db09e5ce1b36b2ffd0989bdd034ed"
+  },
+  {
+    "path": "skills/motion-film/SKILL.md",
+    "sha256": "65c5f4c41f70c7cb3496ad2c559450d29e0a748672a42908ae58f951c5723d46"
+  },
+  {
+    "path": "skills/motion-film/engine/core.js",
+    "sha256": "cedf07326a4975723f49ea9e1ea985a16f54045aa9884e4fb3db7cab7ed70b63"
+  },
+  {
+    "path": "skills/motion-film/engine/new-film.js",
+    "sha256": "05dae0802629d5f7dfca0f6b5cdcb782bfd49a3a6e5ce273321d0dcb8cf9bcf9"
+  },
+  {
+    "path": "skills/motion-film/engine/package-lock.json",
+    "sha256": "183bd9c0245b187e7f2cae6bcdf601a89c6b87e25ab8a7a8698c513eb2d8edb7"
+  },
+  {
+    "path": "skills/motion-film/engine/package.json",
+    "sha256": "e5efeba96e5663dad05ad5c94092cf157d452fcf3e3a734b0957bdde71fbfb7a"
+  },
+  {
+    "path": "skills/motion-film/engine/render.js",
+    "sha256": "44a287584765519045c6f43a0f59bbc3bfc800c4fc0f7bff8645bfda2f0bbf6e"
+  },
+  {
+    "path": "skills/motion-film/engine/start.js",
+    "sha256": "76aef8e10c24dd33c001d4b3e6c37a4a9c43a43ec6b0628a789f0c84d16474a4"
+  },
+  {
+    "path": "skills/motion-film/engine/synth.js",
+    "sha256": "b168e0d6339c197f211918a1a383e986fee4c955372d3c60ddf2216a1e215b10"
+  },
+  {
+    "path": "skills/motion-film/lessons.md",
+    "sha256": "90d15f008a91b2a9b233c0fc530e7f83d600559cbe24ecf841dde485f2cf7266"
+  },
+  {
+    "path": "skills/motion-film/profiles/_template/film-template.html",
+    "sha256": "3a7136995d22ec59101eb243426494ff00f69327bf313dcc7727f5a574ad4ac5"
+  },
+  {
+    "path": "skills/motion-film/profiles/_template/profile.js",
+    "sha256": "f7b0a6e79396d1831331d3aa909443658da96865c6baad3d38290cb20ad3e6a5"
+  },
+  {
+    "path": "skills/motion-film/profiles/_template/profile.md",
+    "sha256": "b4129e3bebc0f0f62716569ea7550d87e36a26caad74ab0639062b685ad31433"
+  },
+  {
+    "path": "skills/motion-film/profiles/_template/theme.js",
+    "sha256": "b86119d2e820d85bf39df1823265c0db3fd3635809d37e48f416a11534c86d80"
+  },
+  {
+    "path": "skills/motion-film/templates/storyboard.md",
+    "sha256": "bbb02e4d9ac3dfc0f835b8513cf962575a78dc5baaf4fe869a3bba3998eff48d"
+  },
+  {
+    "path": "skills/panel/SKILL.md",
+    "sha256": "d223b5d2fea785b19ce46781012c8117c8f65b5565c0298d31acd827004b7c3d"
+  },
+  {
+    "path": "skills/panel/template.html",
+    "sha256": "dc83f7642b0a1d27794340e45e49edf6567b1ce4ed3145ac2a182e6a6855c114"
+  },
+  {
+    "path": "skills/proje-baslat/SKILL.md",
+    "sha256": "af20f150c82ab24322fc55cb35c12bed47c153b5c2fe9ea02023ed12e60b2708"
+  },
+  {
+    "path": "skills/proje-baslat/doktor.py",
+    "sha256": "b63e38e3f55f0a2f17fac3fee09391e1db8d8bb9c6dc6e7bdd2afae6e6c9db36"
+  },
+  {
+    "path": "skills/proje-baslat/doktor_hook.py",
+    "sha256": "2687410da1ecf92b39172457be871f96ab745bb2c52d2d279155ce3a81cf2600"
+  },
+  {
+    "path": "skills/proje-baslat/test_doktor.py",
+    "sha256": "bda9ac556a9ea28a12d03ef56093575b38a919f5adeb1602bbc4a555cb0c64e0"
+  },
+  {
+    "path": "skills/proje-baslat/test_doktor_hook.py",
+    "sha256": "6ab265dc404c1c5dcbf6f387eda3f656291be6ec151d3f013fbc02b69f194e43"
+  },
+  {
+    "path": "skills/sunum-site/SKILL.md",
+    "sha256": "873909160a09ef63a023e781015dca0130e4f672c73619c34ee75de3462b6ed6"
+  },
+  {
+    "path": "skills/sunum-site/template/assets/icon.svg",
+    "sha256": "ccf765c291d65d53ecd110ab8f97a0ef6c5275417a3b7c2408b7d05e5b0ad356"
+  },
+  {
+    "path": "skills/sunum-site/template/assets/logo-dark.svg",
+    "sha256": "853c282471ce0846e10939a74633c28a2a007176bf9bbe4c2fc05d48aa6168ab"
+  },
+  {
+    "path": "skills/sunum-site/template/assets/logo-light.svg",
+    "sha256": "b57caa3448cd866401f392d40854eb2707b4e73b4daa9538b68f98999a70b1a3"
+  },
+  {
+    "path": "skills/sunum-site/template/css/base.css",
+    "sha256": "c21262a6bdcdfa44706f546459e0121f03c5a09efd11f053b980a4b823cba483"
+  },
+  {
+    "path": "skills/sunum-site/template/css/brand.css",
+    "sha256": "058673ea7c7ad9abfa5ab92ec8a13f44dcb50fb716de3bfdfa233407b75f9b6f"
+  },
+  {
+    "path": "skills/sunum-site/template/index.html",
+    "sha256": "862a7a43c6838587a98659d63a07294972cba38e870483d5ae6c4b819e0d4ede"
+  },
+  {
+    "path": "skills/sunum-site/template/js/app.js",
+    "sha256": "7f7581a83f676cd7e7dc47e5f7a4f580a92b18f8f7f5d8789b8a2b52b4a1eaa4"
+  }
+]

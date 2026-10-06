@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;500;700&display=swap">
+<style>
+:root {
+  --paper: #ECEEE9;
+  --sheet: #F7F8F5;
+  --ink: #1D2420;
+  --muted: #5F6963;
+  --line: #CDD2CB;
+  --signal: #2B45C9;
+  --stale: #B4461B;
+  --done: #4E7A5E;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #161917;
+    --sheet: #1E2220;
+    --ink: #E3E6E1;
+    --muted: #9AA39D;
+    --line: #333A36;
+    --signal: #93A4FF;
+    --stale: #F08A5D;
+    --done: #8DBB9C;
+  }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Atkinson Hyperlegible Next", system-ui, "Segoe UI", sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  padding: 0 16px 120px;
+}
+main { max-width: 760px; margin: 0 auto; }
+header { padding: 32px 0 20px; border-bottom: 1px solid var(--line); }
+h1 { font-size: 1.75rem; line-height: 1.2; margin: 0 0 4px; font-weight: 700; }
+.project { color: var(--muted); margin: 0; }
+.stamp { margin: 16px 0 0; font-size: 1.05rem; }
+.stamp strong { font-weight: 700; }
+.stamp.is-stale { color: var(--stale); }
+.now { margin: 8px 0 0; color: var(--muted); }
+.closed-note { margin: 12px 0 0; padding: 8px 12px; border: 1px solid var(--line); border-radius: 6px; color: var(--muted); }
+body.is-closed main > section { opacity: .6; }
+
+section { padding: 28px 0 8px; }
+h2 { font-size: 1.15rem; margin: 0 0 12px; font-weight: 700; }
+h2 .count { color: var(--muted); font-weight: 400; }
+.empty { color: var(--muted); margin: 0; }
+
+/* The one loud element: what is waiting on the user */
+.needs {
+  background: var(--sheet);
+  border-left: 4px solid var(--signal);
+  border-radius: 0 8px 8px 0;
+  padding: 24px 20px 12px;
+  margin-top: 24px;
+}
+.item { padding: 16px 0; border-top: 1px solid var(--line); }
+#questions .item:first-child { border-top: 0; padding-top: 4px; }
+.item-head { display: flex; gap: 10px; align-items: baseline; }
+.item-id { font-weight: 700; color: var(--signal); min-width: 2.2em; }
+.item-text { margin: 0; font-weight: 500; }
+.item-context { margin: 4px 0 0 calc(2.2em + 10px); color: var(--muted); font-size: .95rem; }
+.answer { margin: 10px 0 0 calc(2.2em + 10px); display: grid; gap: 8px; }
+.opt { display: flex; gap: 8px; align-items: flex-start; cursor: pointer; }
+.opt input { margin-top: 4px; accent-color: var(--signal); }
+.rec { color: var(--signal); font-size: .85rem; margin-left: 6px; }
+textarea {
+  width: 100%;
+  min-height: 2.6em;
+  font: inherit;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 6px 10px;
+  resize: vertical;
+}
+textarea:focus, input:focus-visible, button:focus-visible { outline: 2px solid var(--signal); outline-offset: 2px; }
+.item.is-answered .item-id::after { content: " *"; }
+
+ul.plain { list-style: none; padding: 0; margin: 0; }
+ul.plain li { padding: 8px 0; border-top: 1px solid var(--line); }
+ul.plain li:first-child { border-top: 0; }
+.owner { color: var(--muted); font-size: .9rem; }
+.done li { color: var(--muted); }
+.done li .mark { color: var(--done); font-weight: 700; margin-right: 6px; }
+.queue li .mark { color: var(--muted); margin-right: 6px; }
+.evidence { display: block; font-size: .88rem; color: var(--muted); overflow-wrap: anywhere; }
+
+.bar {
+  position: fixed; left: 0; right: 0; bottom: 0;
+  background: var(--sheet);
+  border-top: 1px solid var(--line);
+  padding: 12px 16px;
+}
+.bar-inner { max-width: 760px; margin: 0 auto; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.progress { color: var(--muted); margin-right: auto; }
+button {
+  font: inherit; font-weight: 700;
+  border-radius: 6px; padding: 10px 16px; cursor: pointer;
+  border: 1px solid var(--line); background: transparent; color: var(--ink);
+}
+button.primary { background: var(--signal); border-color: var(--signal); color: #fff; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) button.primary { color: #10142A; } }
+.toast { color: var(--done); font-weight: 500; }
+@media (prefers-reduced-motion: no-preference) { button { transition: filter .15s; } button:hover { filter: brightness(1.08); } }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1 id="title">Panel</h1>
+    <p class="project" id="project"></p>
+    <p class="stamp" id="stamp"></p>
+    <p class="now" id="now"></p>
+    <p class="closed-note" id="closed" hidden>Bu iş kapandı. Panel artık güncellenmiyor.</p>
+  </header>
+
+  <section class="needs" id="needs">
+    <h2>Senden beklenen <span class="count" id="needs-count"></span></h2>
+    <div id="questions"></div>
+    <div id="checks"></div>
+  </section>
+
+  <section class="queue">
+    <h2>Sırada <span class="count" id="queue-count"></span></h2>
+    <ul class="plain" id="queue"></ul>
+  </section>
+
+  <section class="done">
+    <h2>Bitenler <span class="count" id="done-count"></span></h2>
+    <ul class="plain" id="done"></ul>
+  </section>
+</main>
+
+<div class="bar">
+  <div class="bar-inner">
+    <span class="progress" id="progress"></span>
+    <span class="toast" id="toast" role="status" aria-live="polite"></span>
+    <button type="button" id="clear">Temizle</button>
+    <button type="button" class="primary" id="copy">Cevapları kopyala</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var REFRESH_MS = 15000;
+  var IDLE_MS = 20000;
+  var STALE_MIN = 20;
+  var lastInput = 0;
+  var P = null;
+
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+  function store(k, val) {
+    try {
+      if (val === null) localStorage.removeItem(k);
+      else localStorage.setItem(k, val);
+    } catch (e) {}
+  }
+  function load(k) {
+    try { return localStorage.getItem(k); } catch (e) { return null; }
+  }
+  function key(id, part) { return "panel:" + P.slug + ":" + id + ":" + part; }
+
+  function parseStamp(s) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})/.exec(s || "");
+    return m ? new Date(+m[1], +m[2] - 1, +m[3], +m[4], +m[5]) : null;
+  }
+
+  function renderStamp() {
+    var stamp = document.getElementById("stamp");
+    var d = parseStamp(P.updated);
+    var mins = d ? Math.floor((Date.now() - d.getTime()) / 60000) : null;
+    stamp.textContent = "";
+    stamp.appendChild(document.createTextNode("Son güncelleme "));
+    stamp.appendChild(el("strong", null, P.updated || "bilinmiyor"));
+    if (mins != null) stamp.appendChild(document.createTextNode(mins < 1 ? ", şimdi" : ", " + mins + " dk önce"));
+    var stale = P.status !== "done" && mins != null && mins >= STALE_MIN;
+    stamp.classList.toggle("is-stale", stale);
+    if (stale) stamp.appendChild(document.createTextNode(". Uzun süredir güncellenmedi, ajana sor."));
+  }
+
+  function radioGroup(item, pairs) {
+    var wrap = el("div", "answer");
+    var saved = load(key(item.id, "choice"));
+    pairs.forEach(function (pair) {
+      var label = el("label", "opt");
+      var input = document.createElement("input");
+      input.type = "radio";
+      input.name = "q-" + item.id;
+      input.value = pair[0];
+      input.checked = saved ? saved === pair[0] : item.recommended === pair[0];
+      input.addEventListener("change", function () { store(key(item.id, "choice"), input.value); touched(); });
+      label.appendChild(input);
+      var span = el("span", null, pair[1]);
+      if (item.recommended === pair[0]) span.appendChild(el("span", "rec", "öneri"));
+      label.appendChild(span);
+      wrap.appendChild(label);
+    });
+    return wrap;
+  }
+
+  function noteBox(id, placeholder) {
+    var t = document.createElement("textarea");
+    t.rows = 1;
+    t.placeholder = placeholder;
+    t.setAttribute("aria-label", id + " " + placeholder);
+    t.value = load(key(id, "note")) || "";
+    t.addEventListener("input", function () { store(key(id, "note"), t.value || null); touched(); });
+    return t;
+  }
+
+  function renderItem(item, kind) {
+    var box = el("div", "item");
+    box.dataset.id = item.id;
+    var head = el("div", "item-head");
+    head.appendChild(el("span", "item-id", item.id));
+    head.appendChild(el("p", "item-text", item.text));
+    box.appendChild(head);
+    var ctx = kind === "check" ? item.how : item.context;
+    if (ctx) box.appendChild(el("p", "item-context", ctx));
+    var ans;
+    if (kind === "check") {
+      ans = radioGroup(item, [["ok", "Kontrol ettim, sorun yok"], ["sorun", "Sorun var (nota yaz)"], ["sonra", "Sonra bakacağım"]]);
+    } else if (item.type === "choice") {
+      ans = radioGroup(item, (item.options || []).map(function (o, i) {
+        var k = o.key || String.fromCharCode(65 + i);
+        return [k, k + ") " + (o.text || o)];
+      }));
+    } else if (item.type === "confirm") {
+      ans = radioGroup(item, [["evet", "Evet"], ["hayir", "Hayır"]]);
+    } else {
+      ans = el("div", "answer");
+    }
+    ans.appendChild(noteBox(item.id, item.type === "text" ? "Cevabın" : "Not (isteğe bağlı)"));
+    box.appendChild(ans);
+    return box;
+  }
+
+  function list(id, items, mark, withEvidence) {
+    var ul = document.getElementById(id);
+    ul.textContent = "";
+    items.forEach(function (it) {
+      var li = el("li");
+      li.appendChild(el("span", "mark", mark));
+      li.appendChild(document.createTextNode(it.text || it));
+      if (it.owner) li.appendChild(el("span", "owner", " (" + it.owner + ")"));
+      if (withEvidence && it.evidence) li.appendChild(el("span", "evidence", "Kanıt: " + it.evidence));
+      ul.appendChild(li);
+    });
+    if (!items.length) ul.appendChild(el("li", "empty", "Boş."));
+  }
+
+  function collect() {
+    var lines = [];
+    var answered = 0;
+    var all = (P.questions || []).concat(P.checks || []);
+    all.forEach(function (item) {
+      var choice = load(key(item.id, "choice"));
+      if (!choice && item.recommended && item.type !== "text") choice = item.recommended;
+      var note = (load(key(item.id, "note")) || "").trim();
+      var parts = [];
+      if (choice) parts.push(choice);
+      if (note) parts.push("not: " + note.replace(/\s+/g, " "));
+      if (parts.length) answered++;
+      lines.push(item.id + ": " + (parts.length ? parts.join(" | ") : "(boş)"));
+    });
+    return { lines: lines, answered: answered, total: all.length };
+  }
+
+  function updateProgress() {
+    var c = collect();
+    document.getElementById("progress").textContent = c.total ? c.answered + " / " + c.total + " cevaplandı" : "Bekleyen soru yok";
+    document.querySelectorAll(".item").forEach(function (n) {
+      var id = n.dataset.id;
+      n.classList.toggle("is-answered", !!(load(key(id, "choice")) || load(key(id, "note"))));
+    });
+  }
+
+  function touched() { lastInput = Date.now(); updateProgress(); }
+
+  function render() {
+    document.title = P.title + " - Panel";
+    document.getElementById("title").textContent = P.title;
+    document.getElementById("project").textContent = P.project || "";
+    document.getElementById("now").textContent = P.now ? "Şu an: " + P.now : "";
+    document.body.classList.toggle("is-closed", P.status === "done");
+    document.getElementById("closed").hidden = P.status !== "done";
+    renderStamp();
+
+    var qs = P.questions || [], cs = P.checks || [];
+    var qBox = document.getElementById("questions"), cBox = document.getElementById("checks");
+    qBox.textContent = ""; cBox.textContent = "";
+    qs.forEach(function (q) { qBox.appendChild(renderItem(q, "q")); });
+    cs.forEach(function (c) { cBox.appendChild(renderItem(c, "check")); });
+    document.getElementById("needs-count").textContent = "(" + (qs.length + cs.length) + ")";
+    if (!qs.length && !cs.length) qBox.appendChild(el("p", "empty", "Şu an senden beklenen bir şey yok."));
+
+    var queue = P.queue || [], done = P.done || [];
+    document.getElementById("queue-count").textContent = "(" + queue.length + ")";
+    document.getElementById("done-count").textContent = "(" + done.length + ")";
+    list("queue", queue, "-", false);
+    list("done", done, "+", true);
+    updateProgress();
+  }
+
+  function copyText(text) {
+    function fallback() {
+      var t = document.createElement("textarea");
+      t.value = text; t.setAttribute("readonly", ""); t.style.position = "fixed"; t.style.opacity = "0";
+      document.body.appendChild(t); t.select();
+      var ok = false;
+      try { ok = document.execCommand("copy"); } catch (e) {}
+      document.body.removeChild(t);
+      return Promise.resolve(ok);
+    }
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text).then(function () { return true; }, fallback);
+    }
+    return fallback();
+  }
+
+  function toast(msg) {
+    var t = document.getElementById("toast");
+    t.textContent = msg;
+    setTimeout(function () { if (t.textContent === msg) t.textContent = ""; }, 4000);
+  }
+
+  function answersText() {
+    return "Panel cevapları (" + P.slug + ", güncelleme " + P.updated + ")\n" + collect().lines.join("\n");
+  }
+  window.panelAnswers = function () { return P ? answersText() : ""; };
+
+  document.getElementById("copy").addEventListener("click", function () {
+    if (!P) return;
+    copyText(answersText()).then(function (ok) {
+      toast(ok ? "Kopyalandı. Chat'e yapıştır." : "Kopyalanamadı. Metni elle seç.");
+    });
+  });
+
+  document.getElementById("clear").addEventListener("click", function () {
+    if (!P) return;
+    try {
+      Object.keys(localStorage).forEach(function (k) {
+        if (k.indexOf("panel:" + P.slug + ":") === 0) localStorage.removeItem(k);
+      });
+    } catch (e) {}
+    render();
+    toast("Cevaplar temizlendi.");
+  });
+
+  function loadData(first) {
+    var s = document.createElement("script");
+    s.src = "data.js?t=" + Date.now();
+    s.onload = function () {
+      s.remove();
+      if (!window.PANEL) return;
+      var changed = !P || JSON.stringify(window.PANEL) !== JSON.stringify(P);
+      P = window.PANEL;
+      if (changed) render(); else renderStamp();
+    };
+    s.onerror = function () {
+      s.remove();
+      if (first) document.getElementById("now").textContent = "data.js okunamadı. Dosya bu sayfanın yanında mı?";
+    };
+    document.head.appendChild(s);
+  }
+
+  setInterval(function () {
+    if (P && P.status === "done") return;
+    var a = document.activeElement;
+    var typing = a && (a.tagName === "TEXTAREA" || a.tagName === "INPUT");
+    if (typing || Date.now() - lastInput < IDLE_MS) return;
+    loadData(false);
+  }, REFRESH_MS);
+
+  loadData(true);
+})();
+</script>
+</body>
+</html>

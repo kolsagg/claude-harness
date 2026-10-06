@@ -1,0 +1,23 @@
+{
+  "env": {"PYTHONUTF8": "1"},
+  "model": "opus",
+  "language": "Türkçe",
+  "voice": true,
+  "permissions": {"defaultMode": "auto"},
+  "skipDangerousModePermissionPrompt": true,
+  "hooks": {
+    "PreToolUse": [
+      {"matcher": "Skill", "hooks": [{"type": "command", "command": "ccstatusline --hook"}]},
+      {"matcher": "*", "hooks": [{"type": "command", "command": "/home/ada/.orca/agent-hooks/claude-hook.sh"}]}
+    ],
+    "SessionStart": [
+      {"hooks": [
+        {"type": "command", "command": "py -3 -B \"/home/ada/.claude/skills/proje-baslat/doktor_hook.py\"", "timeout": 10},
+        {"type": "command", "command": "powershell -NoProfile -EncodedCommand AAAA"}
+      ]}
+    ],
+    "Stop": [
+      {"hooks": [{"type": "command", "command": "powershell -NoProfile -EncodedCommand AAAA"}]}
+    ]
+  }
+}

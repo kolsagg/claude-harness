@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" style="color:#111">
+  <!-- Yer tutucu logo: kendi markanın artwork'ü ile değiştir -->
+  <rect x="16" y="12" width="40" height="40" rx="8" fill="none" stroke="currentColor" stroke-width="4"/>
+  <text x="96" y="46" font-family="Inter, Helvetica, Arial, sans-serif" font-weight="400" font-size="34" letter-spacing="6" fill="currentColor">BRAND</text>
+</svg>

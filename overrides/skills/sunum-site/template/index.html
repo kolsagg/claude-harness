@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{BAŞLIK}}</title>
+<link rel="icon" href="assets/icon.svg">
+<link rel="stylesheet" href="css/brand.css">
+<link rel="stylesheet" href="css/base.css">
+</head>
+<body>
+
+<aside class="rail">
+  <div class="brand">
+    <img class="logo-dark" src="assets/logo-dark.svg" alt="Brand">
+    <img class="logo-light" src="assets/logo-light.svg" alt="Brand">
+  </div>
+  <nav><!-- app.js bölümlerden doldurur --></nav>
+  <div class="foot"><kbd>↓</kbd> <kbd>↑</kbd> bölüm · <kbd>L</kbd> tema</div>
+</aside>
+
+<main>
+
+<section id="giris" class="hero" data-nav="Giriş">
+  <div class="bg"></div>
+  <div class="kicker fade d1">{{KICKER — ör. Teklif · Ağustos 2026}}</div>
+  <h1 data-split>{{Ana başlık}}</h1>
+  <p class="sub fade d2">{{Tek cümlelik özet. Ne öneriyoruz, kime, neden şimdi.}}</p>
+  <div class="stats fade d3">
+    <div class="stat"><div class="v"><span data-count="15">0</span></div><div class="l">{{ölçü 1}}</div></div>
+    <div class="stat"><div class="v"><em>&lt;</em><span data-count="30">0</span> dk</div><div class="l">{{ölçü 2}}</div></div>
+  </div>
+  <div class="cue fade d4">Aşağı kaydır</div>
+</section>
+
+<section id="sorun" class="rv">
+  <div class="sec-head"><span class="sec-num">01</span><span>{{Kicker}}</span></div>
+  <h2>{{Bölüm başlığı}}</h2>
+  <p class="lead">{{Bölümün tek cümlelik derdi.}}</p>
+  <div class="grid c3">
+    <div class="card"><div class="k">{{etiket}}</div><p>{{metin}}</p></div>
+    <div class="card"><div class="k">{{etiket}}</div><p>{{metin}}</p></div>
+    <div class="card accent"><div class="k">{{etiket}}</div><p>{{vurgulu metin}}</p></div>
+  </div>
+</section>
+
+<section id="nasil" class="rv">
+  <div class="sec-head"><span class="sec-num">02</span><span>{{Kicker}}</span></div>
+  <h2>{{Diyagramlı bölüm}}</h2>
+  <figure class="fig">
+    <!-- diagram-design çıktısındaki <svg> buraya inline gelir -->
+    <figcaption>{{Şekil altyazısı}}</figcaption>
+  </figure>
+</section>
+
+<section id="karar" class="rv">
+  <div class="sec-head"><span class="sec-num">03</span><span>{{Kicker}}</span></div>
+  <h2>{{Kapanış: karar ve ihtiyaçlar}}</h2>
+  <ul class="list">
+    <li><span class="n">01</span><div><b>{{İstenen şey}}</b><span>{{neden gerekli}}</span></div></li>
+    <li><span class="n">02</span><div><b>{{İstenen şey}}</b><span>{{neden gerekli}}</span></div></li>
+  </ul>
+</section>
+
+</main>
+<script src="js/app.js"></script>
+</body>
+</html>

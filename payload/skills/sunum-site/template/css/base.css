@@ -1,0 +1,107 @@
+/* sunum-site — iskelet, tipografi, bölüm kalıpları. Marka token'ları brand.css'te. */
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+body.capture *,body.capture *::before,body.capture *::after{animation:none!important;transition:none!important}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+h1,h2,h3{font-family:var(--font-display);font-weight:700;letter-spacing:-.01em;line-height:1.15;margin:0}
+h2{font-size:clamp(1.6rem,2.8vw,2.2rem);margin:.3rem 0 .9rem}
+h3{font-size:1.1rem;margin:0 0 .4rem}
+p{margin:0 0 1rem;max-width:64ch}
+a{color:var(--accent)}
+strong{color:var(--ink)}
+code,.mono{font-family:var(--font-mono);font-size:.88em}
+
+/* ── ray ── */
+.rail{position:fixed;left:0;top:0;bottom:0;width:188px;padding:28px 20px;border-right:1px solid var(--rule);display:flex;flex-direction:column;gap:20px;background:var(--paper);z-index:10}
+.rail .brand{display:flex;align-items:center;gap:8px;min-height:32px}
+.rail .brand img{height:26px;width:auto}
+body:not(.light) .rail .logo-light,body.light .rail .logo-dark{display:none}
+.rail nav{display:flex;flex-direction:column;gap:2px;margin-top:8px}
+.rail nav a{display:flex;gap:10px;align-items:baseline;padding:7px 10px;border-radius:6px;text-decoration:none;color:var(--muted);font-size:13px;font-family:var(--font-display);font-weight:600;line-height:1.2}
+.rail nav a .n{font-family:var(--font-mono);font-size:10px;opacity:.7;min-width:18px}
+.rail nav a.active{background:var(--accent);color:var(--paper)}
+.rail nav a.active .n{opacity:1}
+.rail .foot{margin-top:auto;font-size:10px;white-space:nowrap;color:var(--soft);font-family:var(--font-mono);line-height:1.5}
+.rail .foot kbd{border:1px solid var(--rule-solid);border-radius:3px;padding:0 4px;font-family:inherit}
+
+/* ── gövde ── */
+main{margin-left:188px}
+section{min-height:100vh;padding:48px 56px 48px 64px;max-width:1240px;border-bottom:1px solid var(--rule);display:flex;flex-direction:column;justify-content:center}
+.sec-head{display:flex;align-items:center;gap:14px;font-family:var(--font-mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--soft)}
+.sec-head .sec-num{color:var(--accent);font-weight:600}
+.lead{font-size:1.12rem;color:var(--muted);max-width:60ch;margin-bottom:.6rem}
+
+/* ── hero ── */
+.hero{justify-content:center;position:relative;overflow:hidden;min-height:100vh}
+.hero .kicker{font-family:var(--font-mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:18px}
+.hero h1{font-size:clamp(2.6rem,5.4vw,4.6rem);max-width:16ch}
+.hero h1 .w{display:inline-block;white-space:nowrap}
+.hero h1 .w span{display:inline-block;opacity:0;transform:translateY(.35em);animation:up .6s cubic-bezier(.2,.7,.2,1) forwards;animation-delay:calc(var(--i) * 28ms)}
+.hero .sub{font-size:1.3rem;color:var(--muted);max-width:52ch;margin-top:22px}
+.hero .stats{display:flex;gap:44px;margin-top:44px;flex-wrap:wrap}
+.hero .cue{position:absolute;bottom:32px;left:72px;font-family:var(--font-mono);font-size:11px;letter-spacing:.16em;color:var(--soft);text-transform:uppercase}
+.fade{opacity:0;animation:up .8s cubic-bezier(.2,.7,.2,1) forwards}
+.d1{animation-delay:.15s}.d2{animation-delay:.45s}.d3{animation-delay:.75s}.d4{animation-delay:1.05s}
+@keyframes up{to{opacity:1;transform:none}}
+.hero .bg{position:absolute;inset:0;z-index:-1;pointer-events:none;background:
+  radial-gradient(38% 46% at 60% 32%,var(--accent-tint) 0,transparent 72%),
+  radial-gradient(40% 40% at 20% 90%,var(--paper-2) 0,transparent 70%)}
+
+/* ── bileşenler ── */
+.stat{display:flex;flex-direction:column;gap:4px}
+.stat .v{font-family:var(--font-display);font-weight:700;font-size:2.6rem;line-height:1;color:var(--ink)}
+.stat .v em{font-style:normal;color:var(--accent)}
+.stat .l{font-size:13px;color:var(--soft);font-family:var(--font-mono);letter-spacing:.06em}
+
+.grid{display:grid;gap:14px;margin-top:8px}
+.grid.c2{grid-template-columns:repeat(2,1fr)}
+.grid.c3{grid-template-columns:repeat(3,1fr)}
+.grid.c4{grid-template-columns:repeat(4,1fr)}
+.card{background:var(--paper-2);border:1px solid var(--rule);border-radius:8px;padding:16px 18px}
+.card.accent{border-color:var(--accent);background:var(--accent-tint)}
+.card .k{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--soft);margin-bottom:8px}
+.card p{margin:0;font-size:14px;color:var(--muted)}
+.card p+p{margin-top:6px}
+
+.list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column}
+.list li{display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--rule)}
+.list li .n{font-family:var(--font-mono);font-size:11px;color:var(--accent)}
+.list li b{display:block;font-family:var(--font-display);font-size:14px}
+.list li span{color:var(--muted);font-size:13px;line-height:1.5}
+
+.fig{margin:8px 0 0;background:var(--paper-2);border:1px solid var(--rule);border-radius:8px;padding:8px;overflow-x:auto;cursor:zoom-in}
+.fig svg{display:block;height:auto;width:100%;max-height:56vh;margin:0 auto;object-fit:contain}
+.fig figcaption{font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--soft);padding:8px 8px 4px}
+.fig figcaption::after{content:"  ·  büyüt";color:var(--soft)}
+
+/* ── diyagram lightbox ── */
+body.has-lightbox{overflow:hidden}
+.fig-lightbox{width:100vw;height:100vh;max-width:none;max-height:none;margin:0;border:0;padding:32px;background:var(--paper-2);color:var(--ink)}
+.fig-lightbox::backdrop{background:rgba(0,0,0,.6)}
+.fig-lightbox[open]{display:flex;flex-direction:column;gap:12px}
+.fig-lightbox[open]{animation:fig-lightbox-in .16s ease}
+body.capture .fig-lightbox[open]{animation:none}
+@media(prefers-reduced-motion:reduce){.fig-lightbox[open]{animation:none}}
+@keyframes fig-lightbox-in{from{opacity:0}to{opacity:1}}
+.fig-lightbox .fig-lightbox-close{position:absolute;top:20px;right:24px;background:none;border:1px solid var(--rule-solid);color:var(--soft);font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:6px 10px;border-radius:4px;cursor:pointer}
+.fig-lightbox .fig-lightbox-body{flex:1;min-height:0;display:flex;align-items:center;justify-content:center}
+.fig-lightbox svg{width:100%;height:100%;max-height:none!important;object-fit:contain}
+.fig-lightbox figcaption{font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--soft);text-align:center}
+.fig-lightbox figcaption::after{content:none}
+
+.badge{display:inline-block;font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:4px;border:1px solid var(--rule-solid);color:var(--muted)}
+.badge.on{background:var(--accent);color:var(--paper);border-color:var(--accent)}
+
+table{border-collapse:collapse;width:100%;font-size:14px;margin-top:8px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--soft);font-weight:500}
+td:first-child{font-family:var(--font-display);font-weight:600}
+
+/* ── reveal ── */
+.rv{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1)}
+.rv.in{opacity:1;transform:none}
+body.capture .rv,body.capture .fade,body.capture .hero h1 .w span{opacity:1;transform:none}
+
+@media(max-width:900px){.rail{display:none}main{margin-left:0}section{padding:56px 24px}.grid.c2,.grid.c3,.grid.c4{grid-template-columns:1fr}.hero .cue{left:24px}}

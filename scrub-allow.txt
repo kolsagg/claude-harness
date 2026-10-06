@@ -1,0 +1,10 @@
+# Kanıtlanmış yanlış pozitifler. Biçim: yol:kural:alt-metin (yol glob olabilir, virgülle çoğul)  # gerekçe
+tests/**,scrub-allow.txt:abs-path:/home/ada  # test fixture'ı: sahte kullanıcı "ada" yolu, gerçek kişi değil
+tests/**,scrub-allow.txt:abs-path:/home/bob  # test örneği: abs-path kuralını tetikleyen uydurma yol
+tests/**,scrub-allow.txt:abs-path:Users/bob  # test örneği: Windows/Git-Bash biçimli uydurma yol
+tests/**,scrub-allow.txt:abs-path:Users\\bob  # test örneği: JSON/Python kaçışlı uydurma Windows yolu
+tests/**,scrub-allow.txt:abs-path:C:\\Users\\ada  # test örneği: kaçışsız ters eğik çizgi onarımı için uydurma yol
+tests/**,scrub-allow.txt:email:someone@example.org  # test örneği: example.org ayrılmış belge alan adı
+tests/**,scrub-allow.txt:email:me@example.org  # test örneği: example.org ayrılmış belge alan adı
+tests/test_export_scrub.py:api-key:api_key  # test örneği: api-key kuralını tetikleyen uydurma değer
+tests/**,scrub-allow.txt:replace-from:Turkish  # test fixture'ı: dil yer tutucu eşlemesi için kullanılan sıradan kelime

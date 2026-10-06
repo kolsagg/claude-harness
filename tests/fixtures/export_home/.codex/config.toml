@@ -1,0 +1,8 @@
+model = "gpt-x"
+auth_mode = "chatgpt"
+openai_api_key = "fake"
+Access_Token = "fake"
+client_SECRET = "fake"
+
+[tui]
+theme = "dark"

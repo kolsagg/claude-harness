@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>{{TITLE}}</title></head>
+<body>
+<script src="/profile/profile.js"></script>
+<script src="/engine/core.js"></script>
+<script src="/profile/theme.js"></script>
+<script>
+// {{TITLE}}: storyboard in storyboard.md. One timing table (E), mirrored in audio.js.
+const E = {};
+const FILM = {
+  duration: {{DURATION}},
+  name: '',
+  tagline: '',
+  async init() {},
+  drawScene(t) {
+    // branch layout on PORTRAIT; theme end card owns the last 2.3 s (IMPACT = duration - 2.3)
+  },
+};
+</script>
+<script src="/engine/start.js"></script>
+</body>
+</html>

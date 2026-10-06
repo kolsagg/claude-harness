@@ -1,0 +1,20 @@
+{
+  "version": "0.2.0",
+  "marketplaces": [
+    {"name": "claude-plugins-official", "repo": "anthropics/claude-plugins-official"},
+    {"name": "extra-market", "repo": "example/extra-market"}
+  ],
+  "plugins": [
+    {"id": "alpha@claude-plugins-official"},
+    {"id": "beta@extra-market"},
+    {"id": "orca-only@extra-market", "requires": "orca"}
+  ],
+  "ownSkills": [
+    {"name": "own-one"},
+    {"name": "codex-skill", "requires": "codex"}
+  ],
+  "externalSkills": [
+    {"source": "example/skills", "skill": "ext-one"},
+    {"source": "example/skills", "skill": "ext-orca", "requires": "orca"}
+  ]
+}

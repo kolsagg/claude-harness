@@ -1,0 +1,26 @@
+{
+  "language": "{{LANGUAGE}}",
+  "model": "opus",
+  "enabledPlugins": {
+    "context7@claude-plugins-official": true
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "{{PYTHON}} {{HOME}}/.claude/skills/alpha/hook.py"
+          }
+        ]
+      }
+    ]
+  },
+  "extra": [
+    {
+      "_requires": "orca",
+      "value": "orca-only"
+    },
+    "always"
+  ]
+}

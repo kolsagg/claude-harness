@@ -1,0 +1,74 @@
+{
+  "version": "0.1.0",
+  "questions": {
+    "USER_NAME": "Claude sana nasıl hitap etsin? (ad)",
+    "LANGUAGE": "Claude hangi dilde konuşsun ve belge yazsın? (İngilizce adıyla, ör. English, German)",
+    "GITHUB_OWNER": "GitHub kullanıcı adın (yeni repolar bu hesaba açılır)",
+    "vault": "Obsidian/beyin vault'u kurulu mu? Evetse yolu (VAULT_PATH)",
+    "orca": "Orca kullanıyor musun?",
+    "codex": "Codex kullanıyor musun?",
+    "permissions": "Tehlikeli mod uyarısı atlansın ve izin modu 'auto' olsun mu? (varsayılan hayır)"
+  },
+  "marketplaces": [
+    {"name": "claude-plugins-official", "repo": "anthropics/claude-plugins-official"},
+    {"name": "mem0-plugins", "repo": "mem0ai/mem0"},
+    {"name": "diagram-design", "repo": "cathrynlavery/diagram-design"},
+    {"name": "i-have-adhd", "repo": "ayghri/i-have-adhd"}
+  ],
+  "plugins": [
+    {"id": "typescript-lsp@claude-plugins-official"},
+    {"id": "pyright-lsp@claude-plugins-official"},
+    {"id": "hookify@claude-plugins-official"},
+    {"id": "context7@claude-plugins-official"},
+    {"id": "frontend-design@claude-plugins-official"},
+    {"id": "security-guidance@claude-plugins-official"},
+    {"id": "ralph-loop@claude-plugins-official"},
+    {"id": "commit-commands@claude-plugins-official"},
+    {"id": "mattpocock-skills@claude-plugins-official"},
+    {"id": "mem0@mem0-plugins", "note": "API anahtarı gerekir: kurulumdan sonra /mem0 onboard"},
+    {"id": "diagram-design@diagram-design"},
+    {"id": "i-have-adhd@i-have-adhd"}
+  ],
+  "ownSkills": [
+    {"name": "fable-orchestration"},
+    {"name": "proje-baslat"},
+    {"name": "derin-analiz"},
+    {"name": "derin-arastirma"},
+    {"name": "panel"},
+    {"name": "sunum-site"},
+    {"name": "motion-film", "postInstall": "npm install --prefix {{SKILL_DIR}}/engine"},
+    {"name": "codex-fleet", "requires": "codex"}
+  ],
+  "externalSkills": [
+    {"source": "vercel-labs/skills", "skill": "find-skills"},
+    {"source": "cloudflare/security-audit-skill", "skill": "security-audit"},
+    {"source": "stablyai/orca", "skill": "orca-cli", "requires": "orca"},
+    {"source": "stablyai/orca", "skill": "orchestration", "requires": "orca"},
+    {"source": "stablyai/orca", "skill": "computer-use", "requires": "orca"}
+  ],
+  "tools": [
+    {"kind": "npm", "package": "ccstatusline"},
+    {"kind": "npm", "package": "agent-browser"},
+    {"kind": "npm", "package": "@openai/codex", "requires": "codex"},
+    {"kind": "pip", "package": "graphifyy", "then": "graphify install", "note": "graphify skill'ini kendi kurar"}
+  ],
+  "export": {
+    "settingsKeys": [
+      "env", "attribution", "model", "statusLine", "language", "effortLevel",
+      "modelSettings", "advisorModel", "pluginConfigs", "autoUpdatesChannel", "tui",
+      "autoMemoryEnabled", "theme", "editorMode", "autoCompactEnabled", "agentPushNotifEnabled"
+    ],
+    "permissionKeys": ["permissions", "skipDangerousModePermissionPrompt"],
+    "hookRules": [
+      {"match": ".orca/agent-hooks", "action": "skip", "why": "Orca uygulaması kendi kurar"},
+      {"match": "-EncodedCommand", "action": "skip", "why": "beyin köprüsü, vault kurulumu kendi kurar"},
+      {"match": "ccstatusline", "action": "keep"},
+      {"match": "proje-baslat/doktor_hook.py", "action": "keep"}
+    ],
+    "exclude": [
+      "skills/**/node_modules/**",
+      "skills/**/__pycache__/**",
+      "skills/**/*.bak*"
+    ]
+  }
+}

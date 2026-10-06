@@ -1,0 +1,71 @@
+{
+  "version": "0.1.0",
+  "questions": {
+    "USER_NAME": "Claude sana nasıl hitap etsin? (ad)",
+    "LANGUAGE": "Claude hangi dilde konuşsun ve belge yazsın? (İngilizce adıyla, ör. Turkish, English)",
+    "GITHUB_OWNER": "GitHub kullanıcı adın (yeni repolar bu hesaba açılır)",
+    "vault": "Obsidian/beyin vault'u kurulu mu? Evetse yolu (VAULT_PATH)",
+    "orca": "Orca kullanıyor musun?",
+    "codex": "Codex kullanıyor musun?",
+    "permissions": "Tehlikeli mod uyarısı atlansın ve izin modu 'auto' olsun mu? (varsayılan hayır)"
+  },
+  "marketplaces": [
+    {
+      "name": "claude-plugins-official",
+      "repo": "anthropics/claude-plugins-official"
+    },
+    {
+      "name": "mem0-plugins",
+      "repo": "mem0ai/mem0"
+    }
+  ],
+  "plugins": [
+    {
+      "id": "context7@claude-plugins-official"
+    },
+    {
+      "id": "mem0@mem0-plugins",
+      "note": "API anahtari gerekir: /mem0 onboard"
+    }
+  ],
+  "ownSkills": [
+    {
+      "name": "alpha"
+    },
+    {
+      "name": "beta",
+      "postInstall": "npm install --prefix {{SKILL_DIR}}/engine"
+    },
+    {
+      "name": "codex-fleet",
+      "requires": "codex"
+    }
+  ],
+  "externalSkills": [
+    {
+      "source": "vercel-labs/skills",
+      "skill": "find-skills"
+    },
+    {
+      "source": "stablyai/orca",
+      "skill": "orca-cli",
+      "requires": "orca"
+    }
+  ],
+  "tools": [
+    {
+      "kind": "npm",
+      "package": "ccstatusline"
+    },
+    {
+      "kind": "npm",
+      "package": "@openai/codex",
+      "requires": "codex"
+    },
+    {
+      "kind": "pip",
+      "package": "graphifyy",
+      "then": "graphify install"
+    }
+  ]
+}
