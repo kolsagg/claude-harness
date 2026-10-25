@@ -63,6 +63,7 @@ Never claim work is complete without evidence: show the test output, the diff, o
 - Prefer immutability — never mutate objects or arrays
 - Many small files over few large files
 - 200-400 lines typical, 800 max per file
+- Text fields (input, textarea, select, contenteditable) never get a visible focus outline, ring or focus box-shadow, on any site or panel: `outline: none` on :focus and :focus-visible. The caret is enough. Buttons and links may keep focus-visible. {{USER_NAME}} has repeated this in every project (2026-10-16); apply it unasked when building any UI.
 
 ### Git
 - Conventional commits: `feat:`, `fix:`, `refactor:`, `docs:`, `test:`

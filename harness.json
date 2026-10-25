@@ -1,5 +1,5 @@
 {
-  "version": "0.1.0",
+  "version": "0.2.0",
   "questions": {
     "USER_NAME": "Claude sana nasıl hitap etsin? (ad)",
     "LANGUAGE": "Claude hangi dilde konuşsun ve belge yazsın? (İngilizce adıyla, ör. English, German)",
@@ -37,7 +37,9 @@
     {"name": "panel"},
     {"name": "sunum-site"},
     {"name": "motion-film", "postInstall": "npm install --prefix {{SKILL_DIR}}/engine"},
-    {"name": "codex-fleet", "requires": "codex"}
+    {"name": "codex-fleet", "requires": "codex"},
+    {"name": "gptpro"},
+    {"name": "gptpro-handoff"}
   ],
   "externalSkills": [
     {"source": "vercel-labs/skills", "skill": "find-skills"},

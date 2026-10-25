@@ -1,7 +1,7 @@
 [
   {
     "path": "codex/config.toml",
-    "sha256": "74e7584cf31ce4c16a3be34d3bd1fec6b4484032c59df86575b3e2d7789589db"
+    "sha256": "68642060ee37ea56ab2e4551d3b2449cc7af49a0baf2241100b324d3462683e0"
   },
   {
     "path": "global/BAGIMLILIKLAR.md.tmpl",
@@ -9,7 +9,7 @@
   },
   {
     "path": "global/CLAUDE.md.tmpl",
-    "sha256": "624c4ca5a160fefda3ec13b96e49e330c1302b258f18d9f7a4d7deca809ab015"
+    "sha256": "cf01bcf81c96a81d3c2d0b2c517c9223c3ad826b8e691b3f69feb7067240ffbc"
   },
   {
     "path": "global/GLOSSARY.md.tmpl",
@@ -17,7 +17,7 @@
   },
   {
     "path": "settings/base.json",
-    "sha256": "3da019e50ce5544cfef402f189f319e43b2d1e2f379eb17c71ac38bd2ec71527"
+    "sha256": "17d778312bd3a79c6748cfca3f586dcdc9496bf1d1c1c02d4a1ecfa557fa6908"
   },
   {
     "path": "settings/permissions.json",
@@ -46,6 +46,30 @@
   {
     "path": "skills/fable-orchestration/SKILL.md",
     "sha256": "dfbf7eedff1df312817898b28fb81ef3115db09e5ce1b36b2ffd0989bdd034ed"
+  },
+  {
+    "path": "skills/gptpro-handoff/SKILL.md",
+    "sha256": "24d69412b61502f87f8367280111ea5f426616100eabb25f930718d8de9ffa19"
+  },
+  {
+    "path": "skills/gptpro-handoff/references/prompt-style.md",
+    "sha256": "fe9ef9623a6aaa15a8f2fce61bcaac8b13868ae7babd80b0dd26f0ea06a1f83e"
+  },
+  {
+    "path": "skills/gptpro/SKILL.md",
+    "sha256": "5b07fb6bab803d8ef67b45155eb05a92b8c263f984666b5dee08d1b6d4c02cd4"
+  },
+  {
+    "path": "skills/gptpro/bundles.example.conf",
+    "sha256": "dde2150e134b2364268bc2fbae8c28654de347b8d0eae62f160ee8b9323b10c0"
+  },
+  {
+    "path": "skills/gptpro/scripts/export.Tests.ps1",
+    "sha256": "5e30db172569748efcb54543d64956e72120c9406b37ca5233204913d769b409"
+  },
+  {
+    "path": "skills/gptpro/scripts/export.ps1",
+    "sha256": "1b26b94889ffcab9a690795db82e24e8a2be92f8789664611f6de93f52b96d6e"
   },
   {
     "path": "skills/motion-film/SKILL.md",
@@ -81,7 +105,7 @@
   },
   {
     "path": "skills/motion-film/lessons.md",
-    "sha256": "90d15f008a91b2a9b233c0fc530e7f83d600559cbe24ecf841dde485f2cf7266"
+    "sha256": "a71d901da282a19e8b23eb7e9ddcc8d795d00e56ce60ebe277a906def6e093fc"
   },
   {
     "path": "skills/motion-film/profiles/_template/film-template.html",
@@ -98,6 +122,30 @@
   {
     "path": "skills/motion-film/profiles/_template/theme.js",
     "sha256": "b86119d2e820d85bf39df1823265c0db3fd3635809d37e48f416a11534c86d80"
+  },
+  {
+    "path": "skills/motion-film/profiles/filigran/alpha.sh",
+    "sha256": "acaa62ef0d2402c48c8a4520ececb44cca19adb807bf5cfce750ebb26e2274bc"
+  },
+  {
+    "path": "skills/motion-film/profiles/filigran/bones.js",
+    "sha256": "eeb67ddc898e60265c1a72cba825e5827615a6f8da7703cab653a58a4b669647"
+  },
+  {
+    "path": "skills/motion-film/profiles/filigran/film-template.html",
+    "sha256": "d86ceca8f4052fbac0ef25fb51d25a08a09fc31c5d23ca33a1b777be08d4f133"
+  },
+  {
+    "path": "skills/motion-film/profiles/filigran/profile.js",
+    "sha256": "fcb7b192ebfb027652bbc3a205936642e3115b7717dfdeebfedbb86c71950c7f"
+  },
+  {
+    "path": "skills/motion-film/profiles/filigran/profile.md",
+    "sha256": "bdeac84e8f2f599dfe913a10e0795eb53dcb4e702eed928124348ea78519a25c"
+  },
+  {
+    "path": "skills/motion-film/profiles/filigran/theme.js",
+    "sha256": "de60a1d4e5b23ffbf203ca585f955721b28060482b64a791d90723ab001a31f5"
   },
   {
     "path": "skills/motion-film/templates/storyboard.md",

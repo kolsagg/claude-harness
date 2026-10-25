@@ -47,3 +47,39 @@ Each item: what happened, the rule that follows. Read before every film.
 22. Tool pitfalls: writing JS through python-in-heredoc turned `\b` into a backspace byte and silently
     broke a regex. Write code files with the Write/Edit tools; grep for control bytes if a regex fails.
 23. Chrome asks for /favicon.ico; the render server answers 204 so it does not fail the page-error check.
+
+## Live decks (2026-10-06)
+24. **A live canvas page is not an offline render.** The film theme (18k particles x 3 motion-blur samples,
+    full-screen blur bloom, per-frame gradients, overlay grain, card shadowBlur) ran at ~20 fps on the owner's
+    PC: Chrome was drawing the canvas on the CPU. Reproduce with `--disable-gpu` before calling it fast.
+    Rules for anything played live: bake static layers (bg, grid, vignette, grain) once; sprite-cache glows;
+    no `filter: blur` or `shadowBlur` per frame; sort particles by colour so fillStyle changes 4 times, not N;
+    bloom = tiny canvas upscaled, blitted only over the shape's bounding box; ~7k particles; auto-drop quality
+    when fps < 45. Result: 18 -> 53-57 fps without GPU, look kept.
+25. **Lower quality must never thin the shape.** Dropping half the particles left holes in thin shapes (thin
+    arms) and the owner saw it at once. Batch instead: bucket particles by colour x 8 alpha levels, one path
+    + one fill per bucket (~32 fills instead of N fillRect): 75-92 fps without GPU at full count. Quality
+    levels only drop bloom and planet dots. Measure uncapped (`--disable-gpu-vsync --disable-frame-rate-limit`),
+    60 fps caps hide differences.
+26. **Static grain/grid looks like a dirty screen.** Film grain works because it changes every frame; baked
+    once, the owner read it as a watermark/aging. In live decks drop grain and dot grids.
+
+## Real product configurators (2026-10-08)
+27. **Use the site's own render layers.** A furniture site's configurator stacks pre-rendered PNG/WebP layers
+    (woods/<id> -> upholstery/<id> -> base on top); they are public. Downloading them gave a photoreal colour
+    swap in canvas (crossfade the old/new layer) instead of a drawn mock-up. Read the page's route JS for paths.
+28. **Clean source artefacts before filming.** Every layer carried a faint white floor ghost (alpha < 60) between
+    the legs; on a light card it read as a smudge. Zero low-alpha pixels in that region of ALL layers, not only
+    the base; check with a full-size crop.
+29. **Portrait captions wrap to 2 lines**: the first line sits ~67 px above L.bigY. Leave that gap above the
+    caption or move L.bigY down (1535 here).
+
+## Edit etiketi / filigran (2026-10-13)
+30. **Overlay klip = profil `filigran`**: saf siyah zemin, boş tema (nav, giriş karartması, kapanış kartı yok), ses yok
+    (scaffold'un audio.js'ini sil, yoksa sessiz ses izi gelir), tek format `video --portrait`.
+31. **Şeffaf çıktı motoru değiştirmeden**: siyah üstüne parlak içerikte alfa = en parlak kanal, renk alfaya bölünür.
+    `profiles/filigran/alpha.sh in.mp4 out.mov` -> ProRes 4444. Kontrol: köşe pikseli alfa 0, renkli zemine overlay still.
+    Teslimde ikisini de ver: MP4 + Screen/Ekran karışımı her editörde (mobil CapCut dahil), MOV masaüstü editörlerde.
+32. **Çizim gibi şekiller (iskelet, kemik) koddan kurulur**: parça listesi (kapsül kemik + elips) -> dış hatta eşit aralıklı
+    taş noktaları (`bones.js`). Önce tek still ile şeklin okunduğunu kanıtla, animasyonu sonra yaz. Dağılmayı saf
+    rastgele değil uzamsal dalga (alttan üste) + rastgele karışımıyla yap; yoksa şekil ilk karede kaybolur.

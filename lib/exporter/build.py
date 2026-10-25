@@ -1,6 +1,7 @@
 """Kaynak ev dizininden bellekte payload dosya haritası üretir (yazmaz)."""
 import hashlib
 import json
+import re
 from pathlib import Path
 
 from .settings import build_base_settings, build_permissions, dump_json
@@ -66,16 +67,78 @@ def _skill_files(source_home, harness, pairs, local_excludes=()):
     return files
 
 
+# Makineye özel tablolar: güvenilen klasörler ve hook güven onayları. Başka makineye
+# taşınırsa yollar tutmaz, hook'lar da kullanıcı incelemeden onaylı sayılır.
+# Satır tabanlıdır: düşürülen anahtarın çok satırlı değeri olursa devam satırları kalır.
+# Codex bu tablolara yalnız tek satırlık değer yazdığı için kabul edildi.
+MACHINE_STATE_PREFIXES = (("projects",), ("hooks", "state"))
+_BARE_KEY = re.compile(r"[A-Za-z0-9_-]+")
+
+
+def _parse_key_path(text, pos=0):
+    """TOML noktalı anahtarını oku: (parçalar, bitiş konumu); okunamazsa (None, pos)."""
+    parts = []
+    while True:
+        while pos < len(text) and text[pos] in " \t":
+            pos += 1
+        if pos < len(text) and text[pos] in "\"'":
+            quote = text[pos]
+            end = pos + 1
+            buf = []
+            while end < len(text) and text[end] != quote:
+                if quote == '"' and text[end] == "\\" and end + 1 < len(text):
+                    end += 1
+                buf.append(text[end])
+                end += 1
+            if end >= len(text):
+                return None, pos
+            parts.append("".join(buf))
+            pos = end + 1
+        else:
+            m = _BARE_KEY.match(text, pos)
+            if not m:
+                return None, pos
+            parts.append(m.group(0))
+            pos = m.end()
+        while pos < len(text) and text[pos] in " \t":
+            pos += 1
+        if pos < len(text) and text[pos] == ".":
+            pos += 1
+            continue
+        return parts, pos
+
+
+def _is_machine_state(path):
+    return any(tuple(path[: len(p)]) == p for p in MACHINE_STATE_PREFIXES)
+
+
 def _codex_config(source_home, pairs):
     path = Path(source_home) / ".codex" / "config.toml"
     if not path.is_file():
         return None
     text = path.read_text(encoding="utf-8")
-    kept = [
-        ln
-        for ln in text.splitlines(keepends=True)
-        if not any(w in ln.lower() for w in ("auth", "key", "token", "secret"))
-    ]
+    kept = []
+    table = []
+    skipping = False
+    for ln in text.splitlines(keepends=True):
+        stripped = ln.strip()
+        if stripped.startswith("["):
+            start = 2 if stripped.startswith("[[") else 1
+            parts, _ = _parse_key_path(stripped, start)
+            # Okunamayan başlık kapalı tarafta kalır: tablo dışarı çıkmaz
+            table = parts or []
+            skipping = parts is None or _is_machine_state(table)
+            if skipping:
+                continue
+        elif skipping:
+            continue
+        elif stripped and not stripped.startswith("#"):
+            parts, _ = _parse_key_path(stripped)
+            if parts and _is_machine_state(table + parts):
+                continue
+        if any(w in ln.lower() for w in ("auth", "key", "token", "secret")):
+            continue
+        kept.append(ln)
     return transform_bytes("".join(kept).encode("utf-8"), pairs)
 
 

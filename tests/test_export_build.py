@@ -109,6 +109,45 @@ class BuildPayloadTest(ExportCase):
         self.assertIn('model = "gpt-x"', toml)
         self.assertIn("[tui]", toml)
 
+    def test_codex_machine_state_tables_dropped(self):
+        # Güvenilen klasörler ve hook güven onayları makineye özeldir; başka makineye
+        # taşınırsa kullanıcı incelemeden hook'lar onaylı sayılır.
+        (self.home / ".codex" / "config.toml").write_text(
+            '[tui]\nx = true\n\n[hooks.state]\n\n'
+            "[hooks.state.'C:\\a\\hooks.json:stop:0:0']\nenabled = true\n"
+            'trusted_hash = "sha256:ab"\n\n'
+            "[projects.'c:\\users\\ada\\dev\\demo']\ntrust_level = \"trusted\"\n\n"
+            '[windows]\nsandbox = "elevated"\n',
+            encoding="utf-8",
+        )
+        files, _ = self.build()
+        toml = files["codex/config.toml"].decode("utf-8")
+        for bad in ("hooks.state", "trusted_hash", "projects.", "trust_level"):
+            self.assertNotIn(bad, toml)
+        self.assertIn("[tui]\nx = true", toml)
+        self.assertIn('[windows]\nsandbox = "elevated"', toml)
+
+    def test_codex_machine_state_hand_edited_forms_dropped(self):
+        # Elle düzenlenmiş biçimler: başlık sonrası yorum, boşluklu/tırnaklı başlık,
+        # tablo dizisi ve başlıksız noktalı anahtar
+        (self.home / ".codex" / "config.toml").write_text(
+            "projects.'c:\\top'.trust_level = \"trusted\"\n"
+            "[tui]\nx = true\n"
+            "[projects] # yorum\nleak1 = 1\n"
+            "[ hooks . state ]\nleak2 = 2\n"
+            '["projects".x]\nleak3 = 3\n'
+            "[[projects]]\nleak4 = 4\n"
+            "[hooks]\nstate.y.trusted_hash = \"leak5\"\nkeep_hooks = true\n"
+            "[windows]\nsandbox = \"elevated\"\n",
+            encoding="utf-8",
+        )
+        files, _ = self.build()
+        toml = files["codex/config.toml"].decode("utf-8")
+        for bad in ("trust_level", "leak1", "leak2", "leak3", "leak4", "leak5"):
+            self.assertNotIn(bad, toml)
+        for good in ("[tui]\nx = true", "keep_hooks = true", 'sandbox = "elevated"'):
+            self.assertIn(good, toml)
+
     def test_override_applied_over_result(self):
         ov = self.root / "overrides" / "skills" / "demo"
         ov.mkdir(parents=True)
