@@ -1,5 +1,5 @@
 {
-  "version": "0.2.0",
+  "version": "0.2.1",
   "questions": {
     "USER_NAME": "Claude sana nasıl hitap etsin? (ad)",
     "LANGUAGE": "Claude hangi dilde konuşsun ve belge yazsın? (İngilizce adıyla, ör. English, German)",

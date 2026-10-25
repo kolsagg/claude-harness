@@ -112,7 +112,8 @@ one-tier scan on a real repo is *all* false positives and you end up passing
 
 - **HARD** — provider-issued credential shapes: private key headers, `AKIA…`,
   `ghp_…`, `github_pat_…`, `xox…`, `AIza…`, long `sk-…`/`sk-ant-…`, JWTs.
-  A hit **aborts the export**, file and line printed. Override with
+  A hit **aborts the export**, file and line printed; the value itself is
+  masked (first 6 chars + length) so it never lands in a log or transcript. Override with
   `-AllowSecrets` only after reading every hit.
 - **SOFT** — generic `secret = "…"` / `password: "…"` assignments. Printed for
   your eyes, never fatal.
@@ -133,7 +134,9 @@ strings, and aborting on those trains you to ignore the guard.
 - Prior `<prefix>-*.zip` files in the output directory are deleted on each run,
   so re-running gives a clean set with no stale bundles; other zips there stay.
 - `file:` must name a file. A folder aborts the export (it would bypass the
-  exclusions); use `dir:` for folders. Symlinks and junctions are skipped.
+  exclusions); use `dir:` for folders. A source must stay inside the repo:
+  `../` paths and paths that pass through a symlink or junction abort the
+  export; links found inside a copied folder are skipped.
 - Nothing is skipped by the secret scan: UTF-16 files are decoded and binary
   files are read byte-wise, so a key inside them still aborts the export.
 - Keep one bundle for docs/ADRs/conventions. Models reason much better about a

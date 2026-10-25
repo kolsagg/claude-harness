@@ -112,6 +112,15 @@ def _is_machine_state(path):
     return any(tuple(path[: len(p)]) == p for p in MACHINE_STATE_PREFIXES)
 
 
+def _may_embed_machine_state(path, rest):
+    """`hooks = { state = ... }` gibi: anahtar bir önekin atası, değeri satır içi tablo."""
+    value = rest.lstrip()
+    if not value.startswith("="):
+        return False
+    is_ancestor = any(len(path) < len(p) and tuple(path) == p[: len(path)] for p in MACHINE_STATE_PREFIXES)
+    return is_ancestor and value[1:].lstrip().startswith("{")
+
+
 def _codex_config(source_home, pairs):
     path = Path(source_home) / ".codex" / "config.toml"
     if not path.is_file():
@@ -133,8 +142,10 @@ def _codex_config(source_home, pairs):
         elif skipping:
             continue
         elif stripped and not stripped.startswith("#"):
-            parts, _ = _parse_key_path(stripped)
-            if parts and _is_machine_state(table + parts):
+            parts, end = _parse_key_path(stripped)
+            if parts and (
+                _is_machine_state(table + parts) or _may_embed_machine_state(table + parts, stripped[end:])
+            ):
                 continue
         if any(w in ln.lower() for w in ("auth", "key", "token", "secret")):
             continue

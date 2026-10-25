@@ -88,6 +88,8 @@ try {
   Assert ($res.Code -eq 1) "çıkış kodu 1 (gelen: $($res.Code))"
   Assert ($res.Log -match 'LIVE-LOOKING CREDENTIALS') 'HARD uyarısı basıldı'
   Assert ($res.Log -match 'core/core/src/k\.ts:1:') 'dosya ve satır gösterildi'
+  Assert (-not $res.Log.Contains($LiveToken)) 'anahtarın tamamı çıktıya basılmadı'
+  Assert (-not $res.Log.Contains($LiveToken.Substring(0, 12))) 'anahtarın ilk 12 karakteri de basılmadı'
   Assert (@(Get-ChildItem $res.Out -Filter *.zip).Count -eq 0) 'hiç zip üretilmedi, eski zip silindi'
 
   Write-Host 'S3: -AllowSecrets ile devam eder'
@@ -166,6 +168,11 @@ define_bundle db 'schema only' \
   $res = Invoke-Export $r
   Assert ($res.Code -eq 1) "SOFT anahtarın arkasındaki özel anahtar: çıkış kodu 1 (gelen: $($res.Code))"
 
+  Remove-Item (Join-Path $r 'src\tls.yaml')
+  New-File $r 'src/EXAMPLE_0123456789/k.ts' "const k = '$LiveToken'"
+  $res = Invoke-Export $r
+  Assert ($res.Code -eq 1) "yolu yer tutucu kelime içeren dosyadaki anahtar: çıkış kodu 1 (gelen: $($res.Code))"
+
   Write-Host 'S10: kaynak kökten dışarı çıkamaz'
   $r = Join-Path $Work 's10\repo'
   New-File $r 'src/a.ts'
@@ -174,6 +181,21 @@ define_bundle db 'schema only' \
   $res = Invoke-Export $r
   Assert ($res.Code -eq 1) "../ kaynağı: çıkış kodu 1 (gelen: $($res.Code))"
   Assert ($res.Log -match 'outside the project root') 'kök dışı hatası basıldı'
+
+  Write-Host 'S11: yoldaki ara klasör bağlantıysa kaynak reddedilir'
+  $r = Join-Path $Work 's11\repo'
+  New-File $r 'src/a.ts'
+  New-File (Join-Path $Work 's11') 'outside/sub/secret.txt'
+  New-File (Join-Path $Work 's11') 'outside/pkg/x.ts'
+  [void](New-Item -ItemType Junction -Path (Join-Path $r 'lnk') -Target (Join-Path $Work 's11\outside'))
+  [IO.File]::WriteAllText((Join-Path $r 'bundles.conf'), "define_bundle x `"x`" dir:lnk/sub`n")
+  $res = Invoke-Export $r
+  Assert ($res.Code -eq 1) "ara bağlantılı kaynak: çıkış kodu 1 (gelen: $($res.Code))"
+  Assert ($res.Log -match 'passes through a link') 'bağlantı hatası basıldı'
+  Remove-Item (Join-Path $r 'bundles.conf')
+  [void](New-Item -ItemType Junction -Path (Join-Path $r 'apps') -Target (Join-Path $Work 's11\outside'))
+  $res = Invoke-Export $r
+  Assert ($res.Code -eq 1) "otomatik algılamada bağlantı olan apps/: çıkış kodu 1 (gelen: $($res.Code))"
 
   Write-Host 'S8: kökten bağlı (/x) ve yalnız klasör (x/) dışlamaları'
   $r = Join-Path $Work 's8\repo'

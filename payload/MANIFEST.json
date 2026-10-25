@@ -57,7 +57,7 @@
   },
   {
     "path": "skills/gptpro/SKILL.md",
-    "sha256": "5b07fb6bab803d8ef67b45155eb05a92b8c263f984666b5dee08d1b6d4c02cd4"
+    "sha256": "a912976a6100ee1d2f313afa3223eb94c0fac93de4f641a00d77e12415611c51"
   },
   {
     "path": "skills/gptpro/bundles.example.conf",
@@ -65,11 +65,11 @@
   },
   {
     "path": "skills/gptpro/scripts/export.Tests.ps1",
-    "sha256": "5e30db172569748efcb54543d64956e72120c9406b37ca5233204913d769b409"
+    "sha256": "420059f4dfa7433da9d3506f47f70743a254bfe48f26f435fabbbf15353dc6ad"
   },
   {
     "path": "skills/gptpro/scripts/export.ps1",
-    "sha256": "1b26b94889ffcab9a690795db82e24e8a2be92f8789664611f6de93f52b96d6e"
+    "sha256": "a3cd1b8353072c30d0a17f503f32cddaff9b298d6a75263417b472b641e23f52"
   },
   {
     "path": "skills/motion-film/SKILL.md",

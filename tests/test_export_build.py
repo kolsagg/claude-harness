@@ -138,6 +138,8 @@ class BuildPayloadTest(ExportCase):
             '["projects".x]\nleak3 = 3\n'
             "[[projects]]\nleak4 = 4\n"
             "[hooks]\nstate.y.trusted_hash = \"leak5\"\nkeep_hooks = true\n"
+            "[top]\n"
+            "[windows.inner]\nz = 1\n"
             "[windows]\nsandbox = \"elevated\"\n",
             encoding="utf-8",
         )
@@ -147,6 +149,23 @@ class BuildPayloadTest(ExportCase):
             self.assertNotIn(bad, toml)
         for good in ("[tui]\nx = true", "keep_hooks = true", 'sandbox = "elevated"'):
             self.assertIn(good, toml)
+
+    def test_codex_machine_state_inline_tables_dropped(self):
+        # Satır içi tablo, makine durumunu üst anahtarın değerine gömebilir
+        (self.home / ".codex" / "config.toml").write_text(
+            'hooks = { state = { "C:\\\\a" = { trusted_hash = "leak6" } } }\n'
+            'model = "gpt-x"\n'
+            "[x]\nprojects = { 'c:\\\\b' = { trust_level = \"leak7\" } }\n"
+            '[tui]\nalt = { projects = "keep_nested" }\n',
+            encoding="utf-8",
+        )
+        files, _ = self.build()
+        toml = files["codex/config.toml"].decode("utf-8")
+        self.assertNotIn("leak6", toml)
+        self.assertIn('model = "gpt-x"', toml)
+        # [x] altındaki projects kök değil: x.projects makine durumu sayılmaz
+        self.assertIn("leak7", toml)
+        self.assertIn("keep_nested", toml)
 
     def test_override_applied_over_result(self):
         ov = self.root / "overrides" / "skills" / "demo"

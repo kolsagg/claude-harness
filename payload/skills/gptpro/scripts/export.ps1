@@ -110,6 +110,21 @@ function Copy-Tree([string]$src, [string]$dest, $regexes) {
   }
 }
 
+# Kökten kaynağa kadar her yol parçası denetlenir: aradaki bir bağlantı (junction/symlink)
+# ön ek kontrolünü geçip depo dışını pakete taşıyabilir.
+function Assert-NoLinkOnPath([string]$abs, [string]$name, [string]$path) {
+  $root = $ProjectRoot.TrimEnd('\')
+  if ($abs.Length -le $root.Length) { return }
+  $cur = $root
+  foreach ($part in $abs.Substring($root.Length).TrimStart('\').Split('\')) {
+    $cur = Join-Path $cur $part
+    if (-not (Test-Path -LiteralPath $cur)) { return }
+    if ((Get-Item -LiteralPath $cur -Force).Attributes -band [IO.FileAttributes]::ReparsePoint) {
+      Stop-Export "source passes through a link in bundle '$name': $path"
+    }
+  }
+}
+
 $script:BundleNames = @()
 $script:BundleDescs = @()
 
@@ -130,9 +145,7 @@ function Add-Bundle([string]$name, [string]$desc, [string[]]$sources) {
     if ($abs -ne $ProjectRoot.TrimEnd('\') -and -not $abs.StartsWith($rootPrefix, [StringComparison]::OrdinalIgnoreCase)) {
       Stop-Export "source outside the project root in bundle '$name': $path"
     }
-    if ((Test-Path -LiteralPath $abs) -and ((Get-Item -LiteralPath $abs -Force).Attributes -band [IO.FileAttributes]::ReparsePoint)) {
-      Write-Warn2 "skipping link source for '$name': $path"; continue
-    }
+    Assert-NoLinkOnPath $abs $name $path
     switch ($kind) {
       'dir' {
         if (-not (Test-Path -LiteralPath $abs -PathType Container)) { Write-Soft "skipping missing dir for '$name': $path"; continue }
@@ -273,6 +286,13 @@ function Read-ScanLines([string]$path) {
   return ,($text -split "`r?`n|`0")
 }
 
+# Bulunan değer çıktıya tam basılmaz: script'i çalıştıran ajanın kaydına anahtar düşmesin.
+# İlk 6 karakter türü gösterir (ghp_, AKIA, sk-ant), gerisi uzunlukla özetlenir.
+function Get-MaskedValue([string]$value) {
+  $keep = [Math]::Min(6, $value.Length)
+  return $value.Substring(0, $keep) + '...[' + $value.Length + ' chars]'
+}
+
 function Invoke-SecretScan {
   $hard = 'BEGIN [A-Z ]*PRIVATE KEY|AKIA[0-9A-Z]{16}|ASIA[0-9A-Z]{16}|sk-ant-[A-Za-z0-9_-]{40,}|sk-[A-Za-z0-9]{40,}|ghp_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{40,}|xox[baprs]-[A-Za-z0-9-]{20,}|AIza[0-9A-Za-z_-]{30,}|eyJ[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}\.'
   $soft = '(password|passwd|secret|api_?key|access_?token)\s*[=:]\s*["''][^"''\s]{8,}'
@@ -293,12 +313,14 @@ function Invoke-SecretScan {
       # HARD satırın tamamında ayrı geçişle aranır: tek birleşik regex'te SOFT eşleşmesi
       # (ör. `secret: "-----BEGIN`) HARD'ın başlangıcını yutup özel anahtarı gizliyordu.
       foreach ($m in $hardRe.Matches($line)) {
-        $hit = "${rel}:${lineNo}:$($m.Value)"
+        $hit = "${rel}:${lineNo}:$(Get-MaskedValue $m.Value)"
         $softHits.Add($hit)
-        if (($hit -cnotmatch $fixture) -and (("/" + $hit) -cnotmatch $testpath)) { $hardHits.Add($hit) }
+        # Yer tutucu işareti yalnız eşleşen değerde aranır (yolda değil: `examples/` klasörü
+        # gerçek anahtarı düşürmesin); test yolu ayrı ve açık bir karardır.
+        if (($m.Value -cnotmatch $fixture) -and ("/${rel}:" -cnotmatch $testpath)) { $hardHits.Add($hit) }
       }
       foreach ($m in $softRe.Matches($line)) {
-        $softHits.Add("${rel}:${lineNo}:$($m.Value)")
+        $softHits.Add("${rel}:${lineNo}:$(Get-MaskedValue $m.Value)")
       }
     }
   }

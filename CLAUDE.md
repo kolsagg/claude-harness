@@ -24,7 +24,7 @@ Bir makinedeki Claude Code kurulumunu (global CLAUDE.md, skill'ler, plugin'ler, 
 2. `py -3 export.py`: scrub must report 0 findings.
 3. Commit with the version in the message, e.g. `feat: <ne değişti> (v0.2.0)`, then `git push`.
 4. Annotated tag on that commit and push it: `git tag -a v0.2.0 -m "v0.2.0 — <özet>"` then `git push origin v0.2.0`.
-5. Verify: `git ls-remote --tags origin` lists the new tag. Tags so far: v0.1.0 (acb8f13), v0.2.0 (324e5bc).
+5. Verify: `git ls-remote --tags origin` lists the new tag. Tags so far: v0.1.0 (acb8f13), v0.2.0 (324e5bc), v0.2.1 (bu commit; etiket listesine bak).
 
 ## Definition of done
 Tests with pass criteria set by the user, not by the agent. No tests written merely to pass. Show evidence (test output, diff) before claiming done, and write it on the DONE.md line.
