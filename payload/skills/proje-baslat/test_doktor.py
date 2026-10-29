@@ -157,6 +157,26 @@ class SkeletonTest(unittest.TestCase):
         self.assertIn("references/", out)
         self.assertIn("retrofit", out)
 
+    def test_missing_architecture_md_is_red(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            make_project(root)
+            (root / "ARCHITECTURE.md").unlink(missing_ok=True)
+            code, out = run_main(root)
+        self.assertEqual(code, 1)
+        self.assertIn("KIRMIZI iskelet", out)
+        self.assertIn("ARCHITECTURE.md", out)
+
+    def test_claude_md_not_pointing_at_architecture_is_red(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            pointers = " ".join(p for p in doktor.CLAUDE_POINTERS if p != "ARCHITECTURE.md")
+            make_project(root, claude_text=pointers)
+            code, out = run_main(root)
+        self.assertEqual(code, 1)
+        self.assertIn("CLAUDE.md isaret etmiyor", out)
+        self.assertIn("ARCHITECTURE.md", out)
+
     def test_claude_md_without_pointers_is_red(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

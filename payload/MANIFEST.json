@@ -9,7 +9,7 @@
   },
   {
     "path": "global/CLAUDE.md.tmpl",
-    "sha256": "cf01bcf81c96a81d3c2d0b2c517c9223c3ad826b8e691b3f69feb7067240ffbc"
+    "sha256": "6c9472759735acb4b48360ba6c3ff1f354592db8f1d9de50ca033260bc6ff1b8"
   },
   {
     "path": "global/GLOSSARY.md.tmpl",
@@ -17,7 +17,7 @@
   },
   {
     "path": "settings/base.json",
-    "sha256": "17d778312bd3a79c6748cfca3f586dcdc9496bf1d1c1c02d4a1ecfa557fa6908"
+    "sha256": "c205d1fcaddd305f110d315606f83ab69bdf4148e63a1b6b5a9bc54f17cd1b94"
   },
   {
     "path": "settings/permissions.json",
@@ -161,11 +161,11 @@
   },
   {
     "path": "skills/proje-baslat/SKILL.md",
-    "sha256": "af20f150c82ab24322fc55cb35c12bed47c153b5c2fe9ea02023ed12e60b2708"
+    "sha256": "a053bdc06f1de60f454290585d3d12bbb03811d86459f801e6e7780821395ac1"
   },
   {
     "path": "skills/proje-baslat/doktor.py",
-    "sha256": "b63e38e3f55f0a2f17fac3fee09391e1db8d8bb9c6dc6e7bdd2afae6e6c9db36"
+    "sha256": "c5a2d2ff071a42aecf81cb698d715f0a76a02dc7e713307d8eaba206484c867a"
   },
   {
     "path": "skills/proje-baslat/doktor_hook.py",
@@ -173,7 +173,7 @@
   },
   {
     "path": "skills/proje-baslat/test_doktor.py",
-    "sha256": "bda9ac556a9ea28a12d03ef56093575b38a919f5adeb1602bbc4a555cb0c64e0"
+    "sha256": "5836e0ee8e53228aebfef2968f82f76424dc2a7f072ed8c64430dbf4fe028310"
   },
   {
     "path": "skills/proje-baslat/test_doktor_hook.py",

@@ -46,6 +46,7 @@ MANUAL_VALUES = ("", "elle")
 PROJECT_MARKERS = ("CONSTANTS.md", "notes.md")
 SKELETON_FILES = (
     "notes.md",
+    "ARCHITECTURE.md",
     "GOALS.md",
     "BACKLOG.md",
     "DONE.md",
@@ -53,7 +54,7 @@ SKELETON_FILES = (
     "docs/agents/issue-tracker.md",
 )
 SKELETON_DIRS = ("reports", "references")
-CLAUDE_POINTERS = ("GOALS.md", "CONTEXT.md", "docs/adr/", "docs/agents/issue-tracker.md", "BAGIMLILIKLAR.md", "references/")
+CLAUDE_POINTERS = ("ARCHITECTURE.md", "GOALS.md", "CONTEXT.md", "docs/adr/", "docs/agents/issue-tracker.md", "BAGIMLILIKLAR.md", "references/")
 SKELETON_ONLY_FLAG = "--iskelet"
 SKELETON_TITLE = "iskelet -> proje-baslat guncel sablonu"
 RETROFIT_HINT = (

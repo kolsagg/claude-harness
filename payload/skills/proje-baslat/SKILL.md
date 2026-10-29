@@ -1,6 +1,6 @@
 ---
 name: proje-baslat
-description: "Bootstrap a new code project (or retrofit an existing one) with the from-zero skeleton before any code is written: short CLAUDE.md, notes.md dump, GOALS.md, GitHub Issues for planned work (mattpocock-skills setup), BACKLOG.md, DONE.md, CONSTANTS.md, CONTEXT.md glossary and docs/adr/ decisions (mattpocock-skills domain-modeling format), BAGIMLILIKLAR.md + doktor check, reports/, references/, roles, git + GitHub. Load when the user says 'proje başlat', 'sıfırdan proje', 'yeni proje aç', 'iskelet kur', 'doktor çalıştır', or when a project folder lacks these files."
+description: "Bootstrap a new code project (or retrofit an existing one) with the from-zero skeleton before any code is written: short CLAUDE.md, notes.md dump, ARCHITECTURE.md, GOALS.md, GitHub Issues for planned work (mattpocock-skills setup), BACKLOG.md, DONE.md, CONSTANTS.md, CONTEXT.md glossary and docs/adr/ decisions (mattpocock-skills domain-modeling format), BAGIMLILIKLAR.md + doktor check, reports/, references/, roles, git + GitHub. Load when the user says 'proje başlat', 'sıfırdan proje', 'yeni proje aç', 'iskelet kur', 'doktor çalıştır', or when a project folder lacks these files."
 ---
 
 # Project bootstrap (from zero)
@@ -17,7 +17,7 @@ One-off short task, single-file script, throwaway experiment, a repo someone els
 
 1. **Folder.** Use the current folder or create `~/dev/<name>`. Name is temporary; purpose matters.
 2. **Create the files below** with the templates. Do not fill them with content the user did not give. `BAGIMLILIKLAR.md` and `references/` start empty; `docs/adr/` is created with the first decision. They fill on first real need.
-3. **Dump session.** Ask the user to walk the product screen by screen (panels, data shown, integrations, auth, docs, profile...). Write raw items to `notes.md`, then shape them into a first architecture sketch in the same file: components, data sources, what is built vs bought, what is deferred to v2. Propose better paths where the user is unsure. Settle the data model here, before code. Mark items the user explicitly excluded from v1. Unanswered points go under `## Open questions` with codes Q1, Q2...
+3. **Dump session.** Ask the user to walk the product screen by screen (panels, data shown, integrations, auth, docs, profile...). Write raw items to `notes.md`, then shape them into the first `ARCHITECTURE.md`: components, data sources, where it runs and how it deploys, what is built vs bought, what is deferred to v2. Propose better paths where the user is unsure. Settle the data model here, before code. Mark items the user explicitly excluded from v1. Unanswered points go under `## Open questions` with codes Q1, Q2...
 4. **Goals.** Ask for 1-3 goals and the done criterion of each. The user sets the criterion, never the agent. Write to `GOALS.md`.
 5. **Language.** Seed `CONTEXT.md` with the domain words the user used in the dump, in the `mattpocock-skills:domain-modeling` format (term, one or two sentence definition, `_Avoid_:` synonyms). From here on that skill keeps it current.
 6. **Constants.** Ask for values that never change (chain/RPC, ports, domains, tenant/account names, IDs). Write them to `CONSTANTS.md`. Leave placeholders for unknowns; never invent.
@@ -26,7 +26,7 @@ One-off short task, single-file script, throwaway experiment, a repo someone els
 9. **Agent skills setup.** Ask the user to type `/mattpocock-skills:setup-matt-pocock-skills` (user-invoked; you cannot start it). Answers: issue tracker GitHub, default triage labels, single-context. It writes `docs/agents/*.md` and an `## Agent skills` block in CLAUDE.md. If `gh` failed in step 8, choose local markdown instead.
 10. **Report back** with the file list and the open questions from steps 3-6.
 
-Retrofit mode (existing project): create only the missing files, do not touch code. Never overwrite an existing `CLAUDE.md`; add a short bridge section pointing at the new files. A project on the older template keeps its `DECISIONS.md` / `SOZLUK.md` as read-only archives (CLAUDE.md says so); terms move to `CONTEXT.md` when next used, new decisions go to `docs/adr/`. An old `TODO.md` stays as an archive; its open items become GitHub issues when next touched. Missing `docs/agents/issue-tracker.md` means step 9 never ran. If `CLAUDE.md` is over ~60 lines, propose which sections move to `docs/` and get confirmation before editing.
+Retrofit mode (existing project): create only the missing files, do not touch code. Never overwrite an existing `CLAUDE.md`; add a short bridge section pointing at the new files. A project on the older template keeps its `DECISIONS.md` / `SOZLUK.md` as read-only archives (CLAUDE.md says so); terms move to `CONTEXT.md` when next used, new decisions go to `docs/adr/`. An old `TODO.md` stays as an archive; its open items become GitHub issues when next touched. Missing `docs/agents/issue-tracker.md` means step 9 never ran. Missing `ARCHITECTURE.md`: build it from what the project already says (an `## Architecture sketch` in `notes.md`, README, the code layout), move that sketch out of `notes.md` leaving a one-line pointer, and mark anything inferred from code as `(koddan çıkarıldı)` for the user to confirm. If `CLAUDE.md` is over ~60 lines, propose which sections move to `docs/` and get confirmation before editing.
 
 ## File semantics (the part that must hold across sessions)
 
@@ -38,7 +38,8 @@ Retrofit mode (existing project): create only the missing files, do not touch co
 - `CONSTANTS.md` — never-changing values. When unsure about such a value, read here. Never guess.
 - `CONTEXT.md` — shared language between the user and the agent, maintained by `mattpocock-skills:domain-modeling`: domain terms only, no implementation detail. Look the user's terms up here first. General technical jargon stays in `~/.claude/GLOSSARY.md`.
 - `BAGIMLILIKLAR.md` — dependency registry: things that silently break when something else changes (backup job vs database name, patch vs plugin version, two copies that must match). Each entry has a check command. An entry without a command is only documentation.
-- `notes.md` — raw product dump, architecture sketch, open questions. Append, do not rewrite history.
+- `notes.md` — raw product dump and open questions. Append, do not rewrite history.
+- `ARCHITECTURE.md` — how the system is built NOW: components and their boundaries, data and where it lives, where it runs and how a change reaches production, build vs buy, what is deferred. Rewritten in place (unlike `notes.md`) in the same change that alters the architecture; a stale ARCHITECTURE.md is a bug. Why a hard choice was made goes to `docs/adr/`, not here; here only the result, with a link to the ADR.
 - `reports/` — research WE produced, `YYYY-MM-DD-<topic>.md` (global Research Reports rule).
 - `references/` — material from OTHERS (screenshots, competitor examples, external docs and PDFs, API sample responses). Never edited. `references/README.md` indexes each item: file, source URL, date taken, why it is here.
 - `CLAUDE.md` — short. Every line is in context every session. Pointers, not prose.
@@ -51,7 +52,7 @@ Retrofit mode (existing project): create only the missing files, do not touch co
 python ~/.claude/skills/proje-baslat/doktor.py <project-root>
 ```
 
-It also has one built-in check that needs no registry entry: in a proje-baslat project (root has `CONSTANTS.md` or `notes.md`) it compares the folder with the CURRENT skeleton (every file and folder below present, `CLAUDE.md` pointing at `GOALS.md`, `CONTEXT.md`, `docs/adr/`, `BAGIMLILIKLAR.md`, `references/`). Red `iskelet` means the project was bootstrapped with an older template; the repair is retrofit mode. When you change the templates in this file, update `SKELETON_FILES` / `SKELETON_DIRS` / `CLAUDE_POINTERS` in `doktor.py` in the same change, or the check goes stale.
+It also has one built-in check that needs no registry entry: in a proje-baslat project (root has `CONSTANTS.md` or `notes.md`) it compares the folder with the CURRENT skeleton (every file and folder below present, `CLAUDE.md` pointing at `ARCHITECTURE.md`, `GOALS.md`, `CONTEXT.md`, `docs/adr/`, `BAGIMLILIKLAR.md`, `references/`). Red `iskelet` means the project was bootstrapped with an older template; the repair is retrofit mode. When you change the templates in this file, update `SKELETON_FILES` / `SKELETON_DIRS` / `CLAUDE_POINTERS` in `doktor.py` in the same change, or the check goes stale.
 
 Session start is automatic: a global SessionStart hook (`doktor_hook.py`, registered in `~/.claude/settings.json`) finds the project by walking up from the session folder, runs the skeleton check live (`doktor.py --iskelet`, milliseconds, no bash), and reads the cached result of the last full run; a missing or 30-minute-old cache starts a hidden background run, so the next session sees fresh results. A red first run is repeated once (cold npx/vitest caches can hit the 30 s timeout). Nothing is injected when all is green. Cache: `%LOCALAPPDATA%/proje-baslat-doktor/`. Trust: the hook runs the full registry (shell commands) in the background ONLY for projects listed in `trusted.txt` there (same format as `ignore.txt`: one absolute path per line, covers everything below it). For an untrusted project it still runs the skeleton check and, if the registry has entries, injects one line saying the registry was not auto-run. Add with `doktor.py --trust <root>`, remove with `doktor.py --untrust <root>`; a manual `doktor.py <root>` always works without trust. Never trust a repo cloned from someone else without the user's explicit yes (its registry is arbitrary shell). Trust is by path: everything below a trusted folder is trusted too, and a later `git pull` that changes its BAGIMLILIKLAR.md runs the new checks without asking again; do not keep someone else's repo inside a trusted folder. Projects the hook must never flag (client repos, handed-over work) go in `ignore.txt` there, one absolute path per line (covers everything below it, e.g. a factory-runs folder); nothing is written inside those repos. Factory SDK runs load user hooks, so their worktree folder belongs in this list. Tests: `python -B -m unittest test_doktor test_doktor_hook`. Still run the full doctor by hand after any change to infrastructure, config or names, and before claiming such a change done. On red, do the `bozuksa:` action or tell the user; never edit the check to make it green. When you fix something that broke silently, add its entry to the registry in the same change.
 
@@ -75,7 +76,8 @@ One sentence: what this is, for whom.
 ## Where things live
 - Shared language with the user: CONTEXT.md (mattpocock-skills:domain-modeling). Look up the user's terms there first.
 - Goals and done criteria: GOALS.md
-- Product dump, architecture sketch, open questions: notes.md
+- How the system is built now (components, data, deploy): ARCHITECTURE.md. Update it in the same change that alters the architecture.
+- Product dump, open questions: notes.md
 - Never-changing values: CONSTANTS.md (read before assuming any address, port, name, ID)
 - Planned work: GitHub Issues (docs/agents/issue-tracker.md) · Unfinished work: BACKLOG.md (mandatory on interruption) · Finished, with evidence: DONE.md
 - Decisions: docs/adr/ (agent writes `proposed`, only the user sets `accepted`)
@@ -94,14 +96,31 @@ Tests with pass criteria set by the user, not by the agent. No tests written mer
 ## Dump (raw, screen by screen)
 -
 
-## Architecture sketch (agent shapes the dump)
-### Components
-### Data: what, from where, stored how
-### Build vs buy
-### Deferred to v2
-
 ## Open questions
 - Q1
+```
+
+`ARCHITECTURE.md`
+```markdown
+# Architecture
+How the system is built now. Rewrite in place in the same change that alters it. The why of hard choices lives in docs/adr/; link it, do not repeat it.
+
+## Overview
+One paragraph: what runs where, for whom.
+
+## Components
+| Component | Responsibility | Tech | Talks to |
+|-----------|----------------|------|----------|
+
+## Data
+What is stored, where, who owns it, how it is backed up.
+
+## Runtime and deploy
+Where it runs, environments, how a change reaches production, how it is rolled back.
+
+## Build vs buy
+
+## Deferred to v2
 ```
 
 `GOALS.md`
