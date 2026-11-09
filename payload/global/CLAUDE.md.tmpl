@@ -15,7 +15,7 @@ Hangi dizinde çalışırsan çalış (özellikle `~/dev` altındaki projeler):
 
 # Core Philosophy
 
-Test-driven, security-first. Delegate per fable-orchestration; trivial work stays in the main loop.
+Test-driven, security-first. Delegate per fable-orchestration; on Fable 5.2 the main loop only orchestrates and all work, trivial included, goes to Sonnet or Opus agents.
 
 ---
 
@@ -104,5 +104,5 @@ Never claim work is complete without evidence: show the test output, the diff, o
 When the user types `/graphify`, use the installed graphify skill or instructions before doing anything else.
 
 # fable-orchestration
-- **fable-orchestration** (`~/.claude/skills/fable-orchestration/SKILL.md`) - main loop Opus 5.5 owns judgment, specs and synthesis. Sonnet 5.5 agents by default for context gathering and code writing; Opus 5.5 agents for important/architectural/risky changes and every review round. Parallel write lanes get disjoint OWNS lists. Always stamp `model:` explicitly.
+- **fable-orchestration** (`~/.claude/skills/fable-orchestration/SKILL.md`) - main loop Fable 5.2 orchestrates only: judgment, specs and synthesis. Sonnet 5.5 agents by default for context gathering and code writing; Opus 5.5 agents for important/architectural/risky changes and every review round. Parallel write lanes get disjoint OWNS lists. Stamp `model: 'sonnet'` or `'opus'` on every spawn, including spawns another skill directs (graphify, code-review); Fable is never a sub-agent, so `fork` is off limits (it always inherits the main model).
 Whenever the task needs sub-agents or substantial research or code, load this skill before doing anything else.

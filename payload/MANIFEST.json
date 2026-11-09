@@ -9,7 +9,7 @@
   },
   {
     "path": "global/CLAUDE.md.tmpl",
-    "sha256": "6c9472759735acb4b48360ba6c3ff1f354592db8f1d9de50ca033260bc6ff1b8"
+    "sha256": "e9006f702152ac187b4b721b631967dc556dab6147778db61cd602e57baf1597"
   },
   {
     "path": "global/GLOSSARY.md.tmpl",
@@ -17,7 +17,7 @@
   },
   {
     "path": "settings/base.json",
-    "sha256": "c205d1fcaddd305f110d315606f83ab69bdf4148e63a1b6b5a9bc54f17cd1b94"
+    "sha256": "28b6e0114fb60548a096e215b678979123ad15d0272e3efbc63a2e44aa56bd59"
   },
   {
     "path": "settings/permissions.json",
@@ -45,7 +45,7 @@
   },
   {
     "path": "skills/fable-orchestration/SKILL.md",
-    "sha256": "dfbf7eedff1df312817898b28fb81ef3115db09e5ce1b36b2ffd0989bdd034ed"
+    "sha256": "5042486ba3442b0972afc097fccc86ed0610baa0957b804700e208524bcdcfcb"
   },
   {
     "path": "skills/gptpro-handoff/SKILL.md",
@@ -73,7 +73,7 @@
   },
   {
     "path": "skills/motion-film/SKILL.md",
-    "sha256": "65c5f4c41f70c7cb3496ad2c559450d29e0a748672a42908ae58f951c5723d46"
+    "sha256": "09c2773f7744cc39fcc45944fa6c16c605b9ed6ad892ea1c9a0eaee0df496917"
   },
   {
     "path": "skills/motion-film/engine/core.js",

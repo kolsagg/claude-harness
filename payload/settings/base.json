@@ -1,6 +1,7 @@
 {
   "env": {
-    "PYTHONUTF8": "1"
+    "PYTHONUTF8": "1",
+    "CLAUDE_CODE_SUBAGENT_MODEL": "sonnet"
   },
   "attribution": {
     "commit": "",
@@ -23,7 +24,7 @@
       "effortLevel": "medium"
     },
     "claude-opus-5-5": {
-      "effortLevel": "xhigh"
+      "effortLevel": "high"
     }
   },
   "advisorModel": "fable",

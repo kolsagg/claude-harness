@@ -1,31 +1,38 @@
 ---
 name: fable-orchestration
-description: "Delegation policy for the Claude agent stack: the main loop runs on Opus 5.5 and owns judgment, specs and synthesis; Sonnet 5.5 sub-agents do most context gathering and code writing; Opus 5.5 sub-agents take important changes, architectural or risky work, and every review round. Includes the parallel-lane file-ownership rules (DO / DO NOT). Load whenever spawning sub-agents (Agent tool, Workflow agent() calls) or planning any delegation."
+description: "Delegation policy for the Claude agent stack: Fable 5.2 runs the main loop as orchestrator only (judgment, specs, synthesis) and every piece of work goes to a sub-agent; Sonnet 5.5 sub-agents do most context gathering and code writing; Opus 5.5 sub-agents take important changes, architectural or risky work, and every review round. Includes the parallel-lane file-ownership rules (DO / DO NOT). Load whenever spawning sub-agents (Agent tool, Workflow agent() calls) or planning any delegation."
 ---
 
 # Orchestration & delegation policy
 
-Stack (operator decision, 28 Sep 2026): **main loop = Opus 5.5**. Delegate
-tiers: **Sonnet 5.5** (default) and **Opus 5.5** (important / careful work and
-reviews). The main loop sizes each job and picks the tier itself; the operator
-trusts that call and does not want to be asked per task.
+Stack (operator decision, 9 Nov 2026): **main loop = Fable 5.2, orchestrator
+only**. Delegate tiers: **Sonnet 5.5** (default) and **Opus 5.5** (important /
+careful work and reviews). The main loop sizes each job and picks the tier
+itself; the operator trusts that call and does not want to be asked per task.
 
-The skill keeps its old name (`fable-orchestration`) because other files and
-notes point to it. Fable is not part of this stack; do not spawn it.
+Fable orchestrates and Sonnet / Opus execute, in every skill.
 
 ## The hard rules
 
 1. **Explicit `model:` on every spawn.** Agent tool, Workflow `agent()` and
    `meta.phases`, and plugin agents too (their frontmatter may carry its own
    model; the `model` parameter overrides it). Only `'sonnet'` or `'opus'`.
-   Omitting it inherits Opus from the main loop and silently doubles cost.
+   This covers spawns another skill directs without naming a model (graphify,
+   gptpro-handoff, `mattpocock-skills:code-review`): the main loop stamps them
+   too. Omitting it makes a Fable sub-agent at 2x Opus / 4x Sonnet list price.
+   `subagent_type: "fork"` is off limits: a fork always runs on the main
+   loop's model and ignores `model`.
 2. **Two delegate tiers, no others.** No Haiku, no Fable.
-3. **The main loop keeps the big picture.** Architecture, specs, contracts,
-   integration, conflict resolution, final synthesis, judgment calls. It
-   verifies every delegated result itself before claiming done.
-4. **Trivial work stays in the main loop.** A lookup, a one-line answer, a
-   two-line edit: no agent. Delegation has overhead (brief, context loss,
-   round trip); spend it only when the job is bigger than the brief.
+3. **The main loop orchestrates.** Architecture, specs, contracts, briefs,
+   conflict resolution, final synthesis, judgment calls. It verifies every
+   delegated result from the evidence the agent returns (diff, test output)
+   before claiming done.
+4. **All execution is delegated, trivial work too.** A sweep, a lookup, a
+   two-line edit, a merge, a test run: a Sonnet or Opus agent does it, with a
+   brief as short as the job. The main loop touches only the conversation
+   with the operator, the few reads it needs to write a brief or check a
+   result, the written outputs of rule 3 (spec, final synthesis or report),
+   and its own session notes (memory, companion files).
 
 ## Choosing the tier (main loop decides)
 
@@ -66,25 +73,26 @@ DO:
 - Put every sibling lane's OWNS into each brief as **DO NOT TOUCH (owned by
   lane X)**.
 - In a git repo, launch parallel write lanes with `isolation: "worktree"`;
-  the main loop integrates one lane at a time and runs the tests after each.
+  a Sonnet integration lane merges one lane at a time and runs the tests
+  after each, and the main loop accepts or rejects from its output.
 - **Commit often inside the lane** (operator decision, 29 Sep 2026) so work
   is never lost to a crash, a limit hit or a killed agent: one small commit
   per finished step (test green, file done), on the lane's own branch /
   worktree. Stage explicit OWNS paths only (`git add <path>`, never `-A` or
-  `.`). Conventional commit message. The main loop merges the lane branch
-  after its acceptance check. A lone lane in the main tree may commit its
+  `.`). Conventional commit message. The integration lane merges the branch
+  after the main loop's acceptance check. A lone lane in the main tree may commit its
   OWNS files the same way.
 - Outside git, give each lane its own subfolder: `<scratchpad>/<lane-name>/`
   for temp files, scripts and output.
 - Declare shared files (barrels, route tables, config, lockfiles,
-  `package.json`) owned by exactly one lane, or by the main loop after all
-  lanes finish.
+  `package.json`) owned by exactly one lane, or by the integration lane after
+  all other lanes finish.
 - Run read-only lanes (research, review) in parallel freely; they own nothing.
 - Tell lanes to report a sibling's edit they notice and leave it intact.
 
 DO NOT:
 - Run two lanes that touch the same file at the same time. Serialize them,
-  or let the main loop do the overlapping part.
+  or give the overlapping part to one lane.
 - Let a lane push, merge into main, rewrite history (amend/rebase/reset
   --hard), run the repo-wide gate, or install/upgrade dependencies unless
   the brief says so.
@@ -121,7 +129,7 @@ Read-only lanes drop OWNS / DO NOT TOUCH.
 
 - **Sonnet:** full order + full boundary. Say exactly what, name exactly what
   not, leave nothing to taste. If the main loop cannot name the files and
-  lines, research is not finished; do that first.
+  lines, research is not finished; send a research lane first.
 - **Opus:** goal + boundaries + freedom. State the understanding or verdict
   needed back; do not script the search.
 

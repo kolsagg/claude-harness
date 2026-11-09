@@ -39,7 +39,7 @@ one agent per film when several films are requested; 1080p 60 fps; outputs stay 
 4. **Scaffold**: `node ~/.claude/skills/motion-film/engine/new-film.js <profile> <film> --duration <s>`.
 5. **Build** `film.html` (FILM: duration, drawScene, init; one timing table `E`) and `audio.js`
    (profile bed + cues at the E times). Branch layout on `PORTRAIT` for 9:16: re-layout, never crop.
-   Several films: spawn one Opus agent per film (prompt below); the lead owns engine/, theme and profile.
+   Spawn one Opus agent per film, a single film too (prompt below); engine/, theme and profile edits go to one separate Opus agent. The lead (Fable) writes briefs, judges the sheets and sends fixes back to the agent.
 6. **Review** (no user stop, but never skip): `node render.js <filmDir> sheet --both`, read both sheets,
    then full-size `stills` at every beat. At least 3 fix rounds. Checklist below.
 7. **Render**: `node render.js <filmDir> video` (both formats; runs audio.js first; mixes music.* if
