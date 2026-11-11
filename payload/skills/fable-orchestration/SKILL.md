@@ -184,12 +184,10 @@ most generic option.
 
 ## Codex lanes
 
-GPT lanes run through `codex exec` (recipe in the `codex-fleet` skill). Pass
-the model explicitly on every lane: `-m gpt-6.1-sol` for execution,
-`-m gpt-6-astra` for second opinions, `-m gpt-6-luna` for bulk cleanup. The
-local `codex-fleet` skill still defaults to astra, so an execution lane
-without `-m` lands on the wrong tier. `gpt-6.1-sol` smoke-verified 11 Nov
-2026 on codex-cli 0.167.0. Effort: `medium` for routine lanes, `high` for
+GPT lanes run through `codex exec` (recipe in the `codex-fleet` skill).
+Execution lanes run on `-m gpt-6.1-sol`, that skill's default; pass
+`-m gpt-6-astra` for second opinions and `-m gpt-6-luna` for bulk cleanup.
+`gpt-6.1-sol` smoke-verified 11 Nov 2026 on codex-cli 0.167.0. Effort: `medium` for routine lanes, `high` for
 precision lanes, `xhigh` or `max` only for an explicitly heavy lane. Stamp
 the model per lane in the spec so the launch is mechanical and no routing
 decision happens at spawn time.

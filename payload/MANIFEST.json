@@ -25,7 +25,7 @@
   },
   {
     "path": "skills/codex-fleet/SKILL.md",
-    "sha256": "2839ae72c51f5839a16d3838aa9eae2f469c67e959f598171e8a7f8aaa4907b1"
+    "sha256": "47003ab17906a37c952620c1b8f3e5d21cd68d5168a87c089b3da619c7d831cf"
   },
   {
     "path": "skills/codex-fleet/scripts/Invoke-KeepAwake.ps1",
@@ -45,7 +45,7 @@
   },
   {
     "path": "skills/fable-orchestration/SKILL.md",
-    "sha256": "94996ffb6cfe4c0028b29d8cf09b05b23a18ce4ffb845b49f17b2e3736ba41c0"
+    "sha256": "7f2c66b2a7c58bb7c52d2e83631635aad020d52c66f1f5109cfe0a6f352b9deb"
   },
   {
     "path": "skills/gptpro-handoff/SKILL.md",
