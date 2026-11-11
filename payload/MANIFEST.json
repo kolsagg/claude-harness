@@ -9,7 +9,7 @@
   },
   {
     "path": "global/CLAUDE.md.tmpl",
-    "sha256": "e9006f702152ac187b4b721b631967dc556dab6147778db61cd602e57baf1597"
+    "sha256": "6dfe4cd5f9a5be85978d76718cf7fbff52883ab89e58accba14fe6cf18cc80d2"
   },
   {
     "path": "global/GLOSSARY.md.tmpl",
@@ -45,7 +45,7 @@
   },
   {
     "path": "skills/fable-orchestration/SKILL.md",
-    "sha256": "5042486ba3442b0972afc097fccc86ed0610baa0957b804700e208524bcdcfcb"
+    "sha256": "94996ffb6cfe4c0028b29d8cf09b05b23a18ce4ffb845b49f17b2e3736ba41c0"
   },
   {
     "path": "skills/gptpro-handoff/SKILL.md",

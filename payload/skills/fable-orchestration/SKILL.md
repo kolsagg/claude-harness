@@ -1,42 +1,64 @@
 ---
 name: fable-orchestration
-description: "Delegation policy for the Claude agent stack: Fable 5.2 runs the main loop as orchestrator only (judgment, specs, synthesis) and every piece of work goes to a sub-agent; Sonnet 5.5 sub-agents do most context gathering and code writing; Opus 5.5 sub-agents take important changes, architectural or risky work, and every review round. Includes the parallel-lane file-ownership rules (DO / DO NOT). Load whenever spawning sub-agents (Agent tool, Workflow agent() calls) or planning any delegation."
+description: "Delegation policy for the agent stack: Fable 5.2 runs the main loop (plan, briefs, hard calls, synthesis, plus small jobs it can do in a handful of tool calls) and routes the rest by difficulty. Medium-high difficulty goes to Opus 5.5 with a fairly loose brief; simple-medium goes to Sonnet 5.5 with a tighter brief. GPT-side execution goes to gpt-6.1-sol with a step-by-step brief; second opinions go to gpt-6-astra. Very large data cleanup goes to Haiku 5.5 or gpt-6-luna. Includes the parallel-lane file-ownership rules (DO / DO NOT) and the brief template. Load whenever spawning sub-agents (Agent tool, Workflow agent() calls, codex fleets) or planning any delegation."
 ---
 
 # Orchestration & delegation policy
 
-Stack (operator decision, 9 Nov 2026): **main loop = Fable 5.2, orchestrator
-only**. Delegate tiers: **Sonnet 5.5** (default) and **Opus 5.5** (important /
-careful work and reviews). The main loop sizes each job and picks the tier
-itself; the operator trusts that call and does not want to be asked per task.
+Stack (operator decision, 11 Nov 2026; replaces the 9 Nov "orchestrator only"
+rule): **main loop = Fable 5.2**, delegate tiers routed by difficulty. The
+main loop sizes each job and picks the tier itself; the operator trusts that
+call and does not want to be asked per task.
 
-Fable orchestrates and Sonnet / Opus execute, in every skill.
+Core law: **the expensive model's tokens buy judgment, not throughput.** The
+main loop writes the plan, the briefs, the hard calls and the final
+synthesis. Everything else goes to the cheapest tier that can carry it.
+
+Routing table and tier brief shapes adapted from avenoxai/avenoxskills
+`fable-orchestration` (MIT, commit ef697fb, 10 Nov 2026). File ownership and
+the brief template are ours.
+
+## The routing table
+
+| Work | Goes to | How to call it | Brief style |
+|---|---|---|---|
+| Architecture, specs, hard judgment, integration, final synthesis | **Main loop** (Fable) | itself | n/a |
+| Medium-high difficulty: multi-file implementation, real debugging, research that needs judgment, review and verification | **Opus 5.5** | `model: 'opus'` | Fairly loose: goal, context, constraints, what done looks like |
+| Simple-medium: scoped edits, pattern clones, lookups, templated work, straightforward reading and summarizing | **Sonnet 5.5** | `model: 'sonnet'` | A notch tighter: named files, steps, output shape, boundaries |
+| GPT-side execution, when the operator asks to send work to GPT | **gpt-6.1-sol** | `codex exec -m gpt-6.1-sol` | Detailed and step by step, nothing left implicit |
+| Second opinion, out-of-the-box thinking, an angle the main loop may be missing | **gpt-6-astra** | `codex exec -m gpt-6-astra` | The open question plus the evidence, as to a peer |
+| Very large data cleanup: thousands of rows or files, normalizing, deduplicating, classifying, extracting | **Haiku 5.5** or **gpt-6-luna** | `model: 'haiku'` / `codex exec -m gpt-6-luna` | Exact rule set with input and output examples, small batches, spot checks |
 
 ## The hard rules
 
 1. **Explicit `model:` on every spawn.** Agent tool, Workflow `agent()` and
    `meta.phases`, and plugin agents too (their frontmatter may carry its own
-   model; the `model` parameter overrides it). Only `'sonnet'` or `'opus'`.
-   This covers spawns another skill directs without naming a model (graphify,
-   gptpro-handoff, `mattpocock-skills:code-review`): the main loop stamps them
-   too. Omitting it makes a Fable sub-agent at 2x Opus / 4x Sonnet list price.
-   `subagent_type: "fork"` is off limits: a fork always runs on the main
-   loop's model and ignores `model`.
-2. **Two delegate tiers, no others.** No Haiku, no Fable.
-3. **The main loop orchestrates.** Architecture, specs, contracts, briefs,
-   conflict resolution, final synthesis, judgment calls. It verifies every
-   delegated result from the evidence the agent returns (diff, test output)
-   before claiming done.
-4. **All execution is delegated, trivial work too.** A sweep, a lookup, a
-   two-line edit, a merge, a test run: a Sonnet or Opus agent does it, with a
-   brief as short as the job. The main loop touches only the conversation
-   with the operator, the few reads it needs to write a brief or check a
-   result, the written outputs of rule 3 (spec, final synthesis or report),
-   and its own session notes (memory, companion files).
+   model; the `model` parameter overrides it). This covers spawns another
+   skill directs without naming a model (graphify, gptpro-handoff,
+   `mattpocock-skills:code-review`): the main loop stamps them too. Omitting
+   it inherits the main-loop model and silently fans out the most expensive
+   tier (2x Opus / 4x Sonnet list price).
+2. **The main-loop model is not a sub-agent tier.** Spawn it as a sub-agent
+   only when the operator names it for that task, or when a rare
+   judgment-heavy piece genuinely fails on Opus. `subagent_type: "fork"`
+   always runs on the main loop's model and ignores `model`, so it counts as
+   a Fable spawn under this rule.
+3. **Route by difficulty, then pick the cheapest tier that can carry it.**
+   When unsure between two tiers, take the cheaper one and verify the result;
+   escalate one tier on failure rather than starting high.
+4. **Claude tiers are the default.** The GPT side is used when the operator
+   asks for it, with two standing exceptions: a second opinion on a hard call
+   goes to astra, and bulk cleanup may go to luna.
+5. **The main loop keeps its own context lean.** Wide reading, file dumps and
+   raw data go to a delegate that returns the conclusion; the main loop reads
+   what it must judge. Small things (a handful of tool calls, one known file)
+   it does itself, since a delegation costs more than it saves there.
+6. **A delegate's report is a claim.** Check the diff, the output or a sample
+   before reporting it as done.
 
-## Choosing the tier (main loop decides)
+## Choosing between Sonnet and Opus
 
-**Sonnet 5.5 is the default** for:
+**Sonnet 5.5** for:
 - Context gathering: file and code sweeps, grep/mapping, reading docs and
   reports, collecting facts for a spec.
 - Code writing against a written spec: features, tests, refactors,
@@ -48,19 +70,17 @@ Fable orchestrates and Sonnet / Opus execute, in every skill.
 - (b) The change is important or needs care: architectural decisions, a
   cross-module contract, auth / payments / customer data / secrets,
   data migrations on live data, anything hard to reverse.
-- (c) Review and gate rounds, always, whatever the size of the diff. Never
-  Sonnet reviewing Sonnet. Use `mattpocock-skills:code-review` or
-  `/code-review` (plus `/security-review` for auth, payments, customer data
-  or secrets), or a `general-purpose` agent with `model: 'opus'` and a
-  review brief.
+- (c) Review and verification of work that matters. Opus is the usual
+  reviewer; a small, low-risk diff may be checked by the main loop itself or
+  by Sonnet. Use `mattpocock-skills:code-review` or `/code-review` (plus
+  `/security-review` for auth, payments, customer data or secrets), or a
+  `general-purpose` agent with `model: 'opus'` and a review brief.
 - (d) Synthesis-heavy research where the deliverable is a judgment, not a
   list of facts.
 
 Split mixed jobs: Opus investigates, Sonnet fixes with the findings in its
-brief, Opus reviews the diff. When in doubt between the two for a write lane,
-pick Sonnet with a tighter spec plus an Opus review, not Opus alone.
-
-Stamp the tier per lane in the plan so launching is mechanical.
+brief, Opus reviews the diff. Stamp the tier per lane in the plan so
+launching is mechanical.
 
 ## Parallel lanes: file ownership
 
@@ -73,8 +93,9 @@ DO:
 - Put every sibling lane's OWNS into each brief as **DO NOT TOUCH (owned by
   lane X)**.
 - In a git repo, launch parallel write lanes with `isolation: "worktree"`;
-  a Sonnet integration lane merges one lane at a time and runs the tests
-  after each, and the main loop accepts or rejects from its output.
+  an integration lane (Sonnet, or the main loop when it is a small merge)
+  merges one lane at a time and runs the tests after each, and the main loop
+  accepts or rejects from the output.
 - **Commit often inside the lane** (operator decision, 29 Sep 2026) so work
   is never lost to a crash, a limit hit or a killed agent: one small commit
   per finished step (test green, file done), on the lane's own branch /
@@ -123,18 +144,55 @@ If you see a mistake in these instructions, say so before applying it.
 
 The last line is mandatory in every write brief: a literal executor
 implements the spec's mistakes too; that line lets it stop and flag them.
-Read-only lanes drop OWNS / DO NOT TOUCH.
+Read-only lanes drop OWNS / DO NOT TOUCH. Long briefs go in a file; the
+prompt points at the file.
 
-### Tone by tier
+### Brief shape per tier
 
-- **Sonnet:** full order + full boundary. Say exactly what, name exactly what
-  not, leave nothing to taste. If the main loop cannot name the files and
-  lines, research is not finished; send a research lane first.
-- **Opus:** goal + boundaries + freedom. State the understanding or verdict
-  needed back; do not script the search.
+The template is the skeleton for every tier. How tightly to fill it depends
+on who reads it.
+
+- **Opus (fairly loose).** State the goal and why it matters, the context it
+  cannot discover on its own, the constraints, and what done looks like. Leave
+  the route to it. Over-specifying an Opus brief costs tokens and removes the
+  judgment you are paying for.
+- **Sonnet (a notch tighter).** Name the files or area, list the steps in
+  order when order matters, give the output format, and say what not to touch.
+  Say when to stop and report instead of improvising. One task per agent. If
+  the main loop cannot name the files and lines, research is not finished;
+  send a research lane first.
+- **gpt-6.1-sol (detailed, complete).** Sol is a soldier: it does exactly
+  what the brief says, step by step, with nothing skipped and nothing added.
+  That makes the brief the whole quality ceiling. Write numbered steps,
+  exact paths and commands, the acceptance check for each step, the edge cases
+  and what to do in each, and the things that are out of scope. Anything left
+  unsaid will not happen. Do not ask it to "use judgment" on an open design
+  question; decide that first, then hand it the decision.
+- **gpt-6-astra (peer question).** Give it the problem, the evidence, the
+  options you see and where you are unsure, and ask for what you may be
+  missing. Do not hand it your conclusion to confirm. Treat the answer as a
+  peer review and disagree on evidence. Medium or high effort; `xhigh` or
+  `max` only when the question justifies it.
+- **Haiku 5.5 / gpt-6-luna (bulk).** One mechanical rule set, stated exactly,
+  with two or three input and output examples. Split the data into batches
+  small enough that a bad batch is cheap to redo, have each batch write to its
+  own output file, and sample the results before merging. Never ask this tier
+  to decide what the rules should be.
 
 Name what you do not want in every brief: an unspecified dimension gets the
 most generic option.
+
+## Codex lanes
+
+GPT lanes run through `codex exec` (recipe in the `codex-fleet` skill). Pass
+the model explicitly on every lane: `-m gpt-6.1-sol` for execution,
+`-m gpt-6-astra` for second opinions, `-m gpt-6-luna` for bulk cleanup. The
+local `codex-fleet` skill still defaults to astra, so an execution lane
+without `-m` lands on the wrong tier. `gpt-6.1-sol` smoke-verified 11 Nov
+2026 on codex-cli 0.167.0. Effort: `medium` for routine lanes, `high` for
+precision lanes, `xhigh` or `max` only for an explicitly heavy lane. Stamp
+the model per lane in the spec so the launch is mechanical and no routing
+decision happens at spawn time.
 
 ## Exceptions
 
