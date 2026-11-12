@@ -3,11 +3,10 @@
 
 İkinci beyin (vault): `{{VAULT_PATH}}`
 
-Hangi dizinde çalışırsan çalış (özellikle `~/dev` altındaki projeler):
+Hangi dizinde çalışırsan çalış:
 - "vaulta not düş / yakala / ikinci beyne yaz" → `{{VAULT_PATH}}\📥 000-Inbox\Dump\` altına YAML frontmatter'lı (title, created, type, status, tags) markdown not olarak yaz. İşleme yapma, ham bırak.
-- "vaulttan oku / ikinci beyinde ne var" → vault içinde ara/oku, cevapla.
-- `~/dev` altında beyin bridge hook'u (global settings.json, SessionStart/Stop/PreCompact/SessionEnd) kısa bir bootstrap enjekte eder; kaynaklı arama için oradaki `beyin.py context "konu" --project X --json` komutunu kullan, dosya gezmeden önce. Hook companion geçmişini enjekte etmez; yazma köprüsü (Dump notu) yukarıdaki kural olarak kalır.
-- Vault dışındayken vault'un companion personası ve hafıza protokolü (companion klasörüne yazımlar) UYGULANMAZ — sadece bu okuma/yazma köprüsü geçerli.
+- "vaulttan oku / ikinci beyinde ne var" → vault içinde ara/oku, cevapla. `~/dev` altında beyin bridge hook'u arama ve kayıt komutlarını oturum başında verir; dosya gezmeden önce onları kullan.
+- Vault dışındayken vault'un companion personası ve companion dosyaları (Last-Session, Threads, Journal) UYGULANMAZ. Hook oturum sonunda kayıt hatırlatırsa yalnız hook'un tarif ettiği kısa sonuç kaydını (receipt, gerekirse genel öğrenim notu) gönder.
 - Kod projesinin kendi bilgisi (mimari, runbook) vault'a değil, projenin kendi docs yapısına gider.
 <!-- endif:vault -->
 

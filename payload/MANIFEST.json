@@ -9,7 +9,7 @@
   },
   {
     "path": "global/CLAUDE.md.tmpl",
-    "sha256": "6dfe4cd5f9a5be85978d76718cf7fbff52883ab89e58accba14fe6cf18cc80d2"
+    "sha256": "a59f5023d1fddfd975c2969189c0219abd5845b07a04bb5b76b995a9e6e19d3b"
   },
   {
     "path": "global/GLOSSARY.md.tmpl",
@@ -17,7 +17,7 @@
   },
   {
     "path": "settings/base.json",
-    "sha256": "28b6e0114fb60548a096e215b678979123ad15d0272e3efbc63a2e44aa56bd59"
+    "sha256": "4a662e7919a49973b21c2e9cd69d3b16f51a757366ab96798bd206f5bac74804"
   },
   {
     "path": "settings/permissions.json",
