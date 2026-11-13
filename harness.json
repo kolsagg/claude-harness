@@ -1,5 +1,5 @@
 {
-  "version": "0.5.2",
+  "version": "0.5.3",
   "questions": {
     "USER_NAME": "Claude sana nasıl hitap etsin? (ad)",
     "LANGUAGE": "Claude hangi dilde konuşsun ve belge yazsın? (İngilizce adıyla, ör. English, German)",
@@ -42,7 +42,6 @@
     {"name": "gptpro-handoff"}
   ],
   "externalSkills": [
-    {"source": "vercel-labs/skills", "skill": "find-skills"},
     {"source": "cloudflare/security-audit-skill", "skill": "security-audit"},
     {"source": "stablyai/orca", "skill": "orca-cli", "requires": "orca"},
     {"source": "stablyai/orca", "skill": "orchestration", "requires": "orca"},

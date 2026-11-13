@@ -28,7 +28,7 @@ Bu repo kurulum sırasında üçüncü taraf kod çeker. Çoğu sürüme sabitle
 | Kaynak | Ne | Not |
 |--------|----|-----|
 | Claude plugin marketplace'leri: `anthropics/claude-plugins-official`, `mem0ai/mem0`, `cathrynlavery/diagram-design`, `ayghri/i-have-adhd` | Plugin'ler | Varsayılan dalın ucundan gelir, sabitlenmemiştir. Plugin'ler hook ve MCP sunucusu ekleyebilir |
-| `npx --yes skills add` (`skills` npm paketinin son sürümü) | `vercel-labs/skills`, `cloudflare/security-audit-skill` skill'leri; yalnız Orca = evet iken `stablyai/orca` skill'leri | Paket ve skill kaynakları sabitlenmemiştir |
+| `npx --yes skills add` (`skills` npm paketinin son sürümü) | `cloudflare/security-audit-skill` skill'i; yalnız Orca = evet iken `stablyai/orca` skill'leri | Paket ve skill kaynakları sabitlenmemiştir |
 | `npm install -g` | `ccstatusline`, `agent-browser`; yalnız Codex = evet iken `@openai/codex` | En son sürüm, npm install betikleri çalışır |
 | `pip install --user graphifyy`, ardından `graphify install` | graphify aracı ve skill'i | Sürüm sabit değil |
 | `npm install` (motion-film motoru) | motion-film skill'inin bağımlılıkları | Kilit dosyası (lockfile) ile sabit |
