@@ -77,6 +77,8 @@ Answers file rules:
 - Required: `USER_NAME`, `LANGUAGE`, `GITHUB_OWNER`, `vault`, `orca`, `codex`. `permissions` is optional and defaults to false when missing in non-interactive mode (in a terminal the installer asks, default no).
 - Never put API keys in the file.
 
+The external phase (npm tools, marketplace clones, plugin installs, pip) can take several minutes: run the installer with a long timeout (10+ minutes) or in the background and wait for it; do not cut it off. If it was interrupted, just run it again.
+
 Preview first with `--dry-run` if the user wants to see changes. Delete the answers file afterwards.
 
 Secondary way, flags. Only use it when every value is plain and safe. WARNING: never put user-supplied text inside double quotes in a shell command (`"$name"`, `"$(...)"` and backticks are still evaluated); prefer the answers file above.
@@ -110,7 +112,7 @@ Trust note for projects: the `proje-baslat` SessionStart hook only auto-runs dep
 python ~/.claude-harness/doctor.py
 ```
 
-Exit `0` = healthy, `1` = something is red, `2` = not installed. Add `--json` for machine output and `--home DIR` for a non-default home. Lines are labelled TAMAM (green), HATA (red), UYARI (yellow), MANUEL (cannot verify automatically). Act on every red line: re-run `install.py` for missing files or plugins, fix the cause shown for failed steps (for example a missing network), then run doctor again. Report yellow and manual lines to the user; they are not failures. External steps that were skipped (`--skip-external`, or a non-default `--home`) show as yellow warnings, not red. A plugin the user disabled on purpose and the installer kept shows as yellow. A yellow "ccstatusline kurulu değil" line means: run `npm install -g ccstatusline`.
+Exit `0` = healthy, `1` = something is red, `2` = not installed. Add `--json` for machine output and `--home DIR` for a non-default home. Lines are labelled TAMAM (green), HATA (red), UYARI (yellow), MANUEL (cannot verify automatically). Act on every red line: re-run `install.py` for missing files or plugins, fix the cause shown for failed steps (for example a missing network), then run doctor again. Report yellow and manual lines to the user; they are not failures. External steps that were skipped (`--skip-external`, or a non-default `--home`) show as yellow warnings, not red. A plugin the user disabled on purpose and the installer kept shows as yellow. A "ccstatusline kurulu değil" line (red, or yellow after a skipped external phase) means the status line stays empty: run `npm install -g ccstatusline`.
 
 ## 6. Steps you cannot do for the user
 

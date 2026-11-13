@@ -16,15 +16,8 @@ def _allowed(item, flags):
 def plan_steps(manifest, flags, python_argv, skill_dirs):
     """Çalıştırılacak adımların sıralı listesi. skill_dirs: {skill adı: kurulu dizin (/ ile)}."""
     steps = []
-    for m in manifest.get("marketplaces", []):
-        steps.append(Step(f"marketplace:{m['name']}", ("claude", "plugin", "marketplace", "add", m["repo"]), "claude"))
-    for p in manifest.get("plugins", []):
-        if _allowed(p, flags):
-            steps.append(Step(f"plugin:{p['id']}", ("claude", "plugin", "install", p["id"]), "claude", note=p.get("note", "")))
-    for s in manifest.get("externalSkills", []):
-        if _allowed(s, flags):
-            argv = ("npx", "--yes", "skills", "add", s["source"], "--skill", s["skill"], "-g", "-y", "-a", AGENT)
-            steps.append(Step(f"skill:{s['source']}#{s['skill']}", argv))
+    # Araçlar önce: plugin klonları uzun sürer, kurulum yarıda kesilse bile
+    # settings.json'ın çağırdığı ccstatusline kurulmuş olur.
     for t in manifest.get("tools", []):
         if not _allowed(t, flags):
             continue
@@ -36,6 +29,15 @@ def plan_steps(manifest, flags, python_argv, skill_dirs):
             steps.append(Step(name, argv, note=t.get("note", "")))
             if t.get("then"):
                 steps.append(Step(f"pip-then:{t['package']}", tuple(shlex.split(t["then"])), after=name))
+    for m in manifest.get("marketplaces", []):
+        steps.append(Step(f"marketplace:{m['name']}", ("claude", "plugin", "marketplace", "add", m["repo"]), "claude"))
+    for p in manifest.get("plugins", []):
+        if _allowed(p, flags):
+            steps.append(Step(f"plugin:{p['id']}", ("claude", "plugin", "install", p["id"]), "claude", note=p.get("note", "")))
+    for s in manifest.get("externalSkills", []):
+        if _allowed(s, flags):
+            argv = ("npx", "--yes", "skills", "add", s["source"], "--skill", s["skill"], "-g", "-y", "-a", AGENT)
+            steps.append(Step(f"skill:{s['source']}#{s['skill']}", argv))
     for skill in manifest.get("ownSkills", []):
         if skill.get("postInstall") and skill["name"] in skill_dirs:
             # önce bölünür, sonra doldurulur: boşluklu yol tek argüman kalır

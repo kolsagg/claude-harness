@@ -230,7 +230,7 @@ class DoctorTest(unittest.TestCase):
         hook = {"hooks": [{"type": "command", "command": "ccstatusline --hook"}]}
         write(sp, json.dumps({**settings, "hooks": {"Stop": [hook]}}))
         code, out = run_doctor(home)
-        self.assertEqual(code, 0, out)
+        self.assertEqual(code, 1, out)
         self.assertIn("npm install -g ccstatusline", out)
         code, out = run_doctor(home, which=fake_which(("claude", "codex", "ccstatusline")))
         self.assertNotIn("ccstatusline kurulu değil", out)
@@ -241,6 +241,18 @@ class DoctorTest(unittest.TestCase):
         settings = json.loads(sp.read_text(encoding="utf-8"))
         write(sp, json.dumps({**settings, "statusLine": {"type": "command", "command": "ccstatusline"}}))
         _, out = run_doctor(home)
+        self.assertIn("ccstatusline kurulu değil", out)
+
+    def test_ccstatusline_missing_is_warning_when_external_skipped(self):
+        home = build_home(self.tmp)
+        sp = home / ".claude/settings.json"
+        settings = json.loads(sp.read_text(encoding="utf-8"))
+        write(sp, json.dumps({**settings, "statusLine": {"type": "command", "command": "ccstatusline"}}))
+        state_path = home / ".claude/.claude-harness.json"
+        state = json.loads(state_path.read_text(encoding="utf-8"))
+        write(state_path, json.dumps({**state, "skipExternal": True}))
+        code, out = run_doctor(home)
+        self.assertEqual(code, 0, out)
         self.assertIn("ccstatusline kurulu değil", out)
 
     def test_json_output(self):

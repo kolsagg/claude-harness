@@ -120,14 +120,16 @@ def check_settings(settings, err, manifest, flags, kept=()):
     return out
 
 
-def check_statusline(settings, which):
+def check_statusline(settings, which, skipped=False):
     """ccstatusline hook'u ya da statusLine'ı varsa komut PATH'te olmalı."""
     if not isinstance(settings, dict):
         return []
     scanned = json.dumps([settings.get("hooks", {}), settings.get("statusLine", {})])
     if "ccstatusline" not in scanned or which("ccstatusline"):
         return []
-    return [Check(WARN, "ccstatusline", "ccstatusline kurulu değil: npm install -g ccstatusline")]
+    # ayar komutu çağırıyor ama komut yok: statusline boş kalır. --skip-external ile kurulduysa elle yapılacak iştir
+    level = WARN if skipped else RED
+    return [Check(level, "ccstatusline", "ccstatusline kurulu değil: npm install -g ccstatusline")]
 
 
 def check_cli_plugins(home, manifest, flags, which, run, skipped=False):
@@ -229,7 +231,7 @@ def run_all(state, manifest, home, which=shutil.which, run=default_run):
         *check_placeholders(state, home),
         *check_claude_md(home),
         *check_settings(settings, err, manifest, flags, kept),
-        *check_statusline(settings, which),
+        *check_statusline(settings, which, bool(state.get("skipExternal"))),
         *check_cli_plugins(home, manifest, flags, which, run, bool(state.get("skipExternal"))),
         *check_own_skills(manifest, flags, home),
         *check_external_skills(manifest, flags, home, bool(state.get("skipExternal"))),

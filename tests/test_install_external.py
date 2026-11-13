@@ -15,7 +15,8 @@ class ExternalStepsTest(HomeCase):
         code, out, runner = self.go()
         self.assertEqual(code, 0, out)
         calls = runner.calls
-        self.assertEqual(calls[0], ["claude", "plugin", "marketplace", "add", "anthropics/claude-plugins-official"])
+        claude_calls = [c for c in calls if c[0] == "claude"]
+        self.assertEqual(claude_calls[0], ["claude", "plugin", "marketplace", "add", "anthropics/claude-plugins-official"])
         self.assertIn(["claude", "plugin", "marketplace", "add", "mem0ai/mem0"], calls)
         self.assertIn(["claude", "plugin", "install", "context7@claude-plugins-official"], calls)
         self.assertIn(["claude", "plugin", "install", "mem0@mem0-plugins"], calls)
@@ -29,6 +30,13 @@ class ExternalStepsTest(HomeCase):
         joined = [" ".join(c) for c in calls]
         self.assertFalse(any("orca" in j or "@openai/codex" in j for j in joined))
         self.assertIn("/mem0 onboard", out)
+
+    def test_npm_tools_run_before_slow_plugin_steps(self):
+        # plugin klonları uzun sürer; kuran ajan zaman aşımına düşse bile statusline kurulmuş olmalı
+        _, _, runner = self.go()
+        calls = runner.calls
+        first_claude = next(i for i, c in enumerate(calls) if c[0] == "claude")
+        self.assertLess(calls.index(["npm", "install", "-g", "ccstatusline"]), first_claude)
 
     def test_orca_and_codex_add_their_steps(self):
         _, _, runner = self.go("--orca", "--codex")
